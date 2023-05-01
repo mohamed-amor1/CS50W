@@ -1,0 +1,171 @@
+@font-face {
+  font-family: "GoogleSansDisplay";
+  src: url("font/GoogleSansDisplay-Regular.ttf") format("truetype");
+}
+/* Adjustments for smaller screens */
+@media (max-width: 768px) {
+  #logo {
+    font-size: 60px;
+    margin-top: 50px;
+  }
+
+  .navbar {
+    margin: 0;
+  }
+
+  #search {
+    width: 90%;
+    max-width: 500px;
+  }
+
+  #search_button {
+    margin-left: 0;
+    margin-right: 0;
+    width: 100%;
+    margin-top: 10px;
+  }
+
+  #lucky_button {
+    width: 100%;
+    margin-top: 10px;
+  }
+}
+
+html {
+  font-family: "GoogleSansDisplay" !important;
+}
+.navbar {
+  margin-right: 150px;
+}
+form {
+  color: #555;
+  display: flex;
+  padding: 3px;
+  border: 2px transparent currentColor;
+  border-radius: 5px;
+  flex-direction: column;
+  align-items: center;
+}
+
+input[type="search"] {
+  border: none;
+  background: transparent;
+  margin: 0;
+  padding: 7px 8px;
+  padding-left: 20px;
+  font-size: 14px;
+  color: inherit;
+  border: 1px solid transparent;
+  border-radius: inherit;
+}
+
+input[type="search"]::placeholder {
+  color: #bbb;
+}
+
+.actual-body {
+  display: grid;
+  place-items: center;
+}
+
+button[type="submit"] {
+  text-indent: -999px;
+  overflow: hidden;
+  width: 40px;
+  padding: 0;
+  margin: 0;
+  border: 1px solid transparent;
+  border-radius: inherit;
+  background: transparent
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' class='bi bi-search' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z'%3E%3C/path%3E%3C/svg%3E")
+    no-repeat center;
+  cursor: pointer;
+  opacity: 0.7;
+}
+
+button[type="submit"]:hover {
+  opacity: 1;
+}
+
+button[type="submit"]:focus,
+input[type="search"]:focus {
+  box-shadow: 0 0 3px 0 #1183d6;
+  border-color: #1183d6;
+  outline: none;
+}
+
+#search {
+  border: 1px solid #ccc;
+  width: 600px;
+  align-items: center;
+  transition: box-shadow 0.3s;
+  margin: 10px;
+  width: 500px;
+  height: 30px;
+  font-size: 16px;
+  padding: 5px;
+  border: none;
+  border-radius: 15px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+#search:hover {
+  box-shadow: 0 0 11px rgba(33, 33, 33, 0.2);
+}
+
+input:focus {
+  outline: none;
+  border: 2px solid #ccc;
+  box-shadow: 0 0 5px #ccc;
+}
+
+#logo {
+  font-family: "GoogleSansDisplay" !important;
+  margin-top: 100px;
+  font-size: 80px;
+}
+
+#search_button:hover {
+  border: solid 0.01px rgb(209, 209, 209);
+}
+
+#lucky_button:hover {
+  border: solid 0.01px rgb(209, 209, 209);
+}
+
+#search_button {
+  margin-right: 10px;
+  width: 150px;
+  height: 40px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #fff;
+  background-color: #4285f4;
+  border: none;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+#lucky_button {
+  width: 150px;
+  height: 40px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #fff;
+  background-color: #fbbc05;
+  border: none;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.col-sm {
+  margin: 20px;
+}
+
+.container {
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.row {
+  margin: 20px;
+}
