@@ -40,7 +40,7 @@
     />
 
     <div class="container" style="font-family: Arial, Helvetica, sans-serif">
-      <div class="row">
+      <div class="row" style="padding: 10px">
         <div class="col-sm-2" style="font-size: 16px; font-weight: 500">
           Trouvez des pages avec…
         </div>
@@ -53,7 +53,11 @@
         <div class="col-sm-2">tous les mots suivants :</div>
         <div class="col-sm-6">
           <form class="d-flex" action="https://www.google.com/search">
-            <input class="form-control" type="text" name="as_q" />
+            <input
+              class="form-control input rounded-0"
+              type="text"
+              name="as_q"
+            />
 
             <button
               class="btn btn-outline-success"
@@ -70,7 +74,11 @@
         <div class="col-sm-2">ce mot ou cette expression exact(e) :</div>
         <div class="col-sm-6">
           <form class="d-flex" action="https://www.google.com/search">
-            <input class="form-control" type="text" name="as_epq" />
+            <input
+              class="form-control input rounded-0"
+              type="text"
+              name="as_epq"
+            />
             <button
               class="btn btn-outline-success"
               type="submit"
@@ -86,7 +94,11 @@
         <div class="col-sm-2">l'un des mots suivants :</div>
         <div class="col-sm-6">
           <form class="d-flex" action="https://www.google.com/search">
-            <input class="form-control" type="text" name="as_oq" />
+            <input
+              class="form-control input rounded-0"
+              type="text"
+              name="as_oq"
+            />
             <button
               class="btn btn-outline-success"
               type="submit"
@@ -102,7 +114,11 @@
         <div class="col-sm-2">aucun des mots suivants :</div>
         <div class="col-sm-6">
           <form class="d-flex" action="https://www.google.com/search">
-            <input class="form-control" type="text" name="as_eq" />
+            <input
+              class="form-control input rounded-0"
+              type="text"
+              name="as_eq"
+            />
 
             <button
               class="btn btn-outline-success"
@@ -121,38 +137,54 @@
         <div class="col-sm-2">nombres compris entre :</div>
 
         <div class="col-sm-6">
-          <div class="row">
-            <div class="col-sm-12 d-flex align-items-center">
-              <form class="w-100" action="https://www.google.com/search">
-                <div class="form-group mr-3 mb-0">
-                  <input
-                    class="form-control"
-                    type="text"
-                    name="as_nlo"
-                    style="width: 200px"
-                  />
-                </div>
-                <p class="mb-0">et</p>
-                <div class="form-group mr-3 mb-0">
-                  <input
-                    class="form-control"
-                    type="text"
-                    name="as_nhi"
-                    style="width: 200px"
-                  />
-                </div>
+          <div class="col-sm-3">
+            <form action="https://www.google.com/search">
+              <div class="form-group">
+                <input
+                  type="text"
+                  class="form-control input rounded-0"
+                  name="as_nlo"
+                />
                 <button
                   class="btn btn-outline-success"
                   type="submit"
-                  style="display: none"
+                  hidden
+                  formnovalidate
                 ></button>
+              </div>
+              <div class="form-group">
+                <div class="form-check">
+                  <input
+                    class="form-control input rounded-0"
+                    type="checkbox"
+                    id="autoSizingCheck"
+                    hidden
+                  />
+                  <label
+                    class="form-check-label"
+                    for="autoSizingCheck"
+                    style="
+                      margin-top: 10px;
+                      font-size: 12pt;
+                      margin-right: 10px;
+                    "
+                  >
+                    et
+                  </label>
+                </div>
+                <input
+                  type="text"
+                  class="form-control input rounded-0"
+                  name="as_nhi"
+                />
                 <button
                   class="btn btn-outline-success"
                   type="submit"
-                  style="display: none"
+                  hidden
+                  formnovalidate
                 ></button>
-              </form>
-            </div>
+              </div>
+            </form>
           </div>
         </div>
 
