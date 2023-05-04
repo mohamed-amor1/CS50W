@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+
 @font-face {
   font-family: "GoogleSansDisplay";
   src: url("font/GoogleSansDisplay-Regular.ttf") format("truetype");
@@ -31,36 +33,72 @@
   }
 }
 
-html {
+html,
+body {
   font-family: "GoogleSansDisplay" !important;
+  background-color: #edf1f4 !important;
 }
 .navbar {
   margin-right: 150px;
+  background-color: #edf1f4;
+  margin-top: 20px;
 }
+
+.nav-item {
+  color: #4a525c;
+  font-family: "Montserrat", sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.nav-item:hover {
+  background-image: linear-gradient(
+    to left top,
+    #4885ed,
+    #8c72df,
+    #b95bc3,
+    #d5419e,
+    #e22c73,
+    #eb355c,
+    #ee4543,
+    #ea5929,
+    #f1741e,
+    #f58e10,
+    #f6a805,
+    #f4c20d
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  text-fill-color: transparent;
+}
+
 form {
   color: #555;
   display: flex;
   padding: 3px;
+
   border: 2px transparent currentColor;
   border-radius: 5px;
   flex-direction: column;
   align-items: center;
 }
 
-input[type="search"] {
+input [type="search"] {
   border: none;
-  background: transparent;
+  color: #626571;
+  background-color: #edf1f4;
   margin: 0;
   padding: 7px 8px;
   padding-left: 20px;
-  font-size: 14px;
-  color: inherit;
-  border: 1px solid transparent;
-  border-radius: inherit;
+  font-size: 18px;
+  border: 1px solid white;
+  border-radius: 100px;
 }
 
 input[type="search"]::placeholder {
-  color: #bbb;
+  color: gray;
 }
 
 .actual-body {
@@ -107,10 +145,16 @@ input[type="search"]:focus {
   border: none;
   border-radius: 15px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  transition: background-color 0.4s ease;
+}
+
+input:hover {
+  box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px,
+    rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
 }
 
 #search:hover {
-  box-shadow: 0 0 11px rgba(33, 33, 33, 0.2);
+  box-shadow: rgba(0, 0, 0, 0.2) 0px 20px 30px;
 }
 
 input:focus {
@@ -126,35 +170,46 @@ input:focus {
 }
 
 #search_button:hover {
-  border: solid 0.01px rgb(209, 209, 209);
+  background-color: #d6dfe5;
+  cursor: pointer;
+  box-shadow: rgba(0, 0, 0, 0.2) 0px 12px 28px 0px,
+    rgba(0, 0, 0, 0.1) 0px 2px 4px 0px,
+    rgba(255, 255, 255, 0.05) 0px 0px 0px 1px inset;
 }
 
 #lucky_button:hover {
-  border: solid 0.01px rgb(209, 209, 209);
+  background-color: #d6dfe5;
+  cursor: pointer;
+  box-shadow: rgba(0, 0, 0, 0.2) 0px 12px 28px 0px,
+    rgba(0, 0, 0, 0.1) 0px 2px 4px 0px,
+    rgba(255, 255, 255, 0.05) 0px 0px 0px 1px inset;
 }
 
 #search_button {
-  margin-right: 10px;
+  margin-right: 45px;
   width: 150px;
   height: 40px;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: bold;
-  color: #fff;
-  background-color: #4285f4;
+  color: #4b5060;
+  background-color: #e2e6e9;
   border: none;
   border-radius: 5px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  box-shadow: rgba(0, 0, 0, 0.15) 0px 3px 3px 0px;
+  text-align: center; /* Center the text horizontally */
 }
+
 #lucky_button {
   width: 150px;
+  align-content: center;
   height: 40px;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: bold;
-  color: #fff;
-  background-color: #fbbc05;
+  color: #4b5060;
+  background-color: #e2e6e9;
   border: none;
   border-radius: 5px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  box-shadow: rgba(0, 0, 0, 0.15) 0px 3px 3px 0px;
 }
 
 .col-sm {

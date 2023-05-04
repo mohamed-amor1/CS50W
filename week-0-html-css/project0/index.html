@@ -13,37 +13,51 @@
     />
   </head>
   <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-body">
+    <nav class="navbar navbar-expand-lg navbar-light bg-transparent">
       <ul
         class="navbar-nav ms-auto mb-2 mb-lg-0 justify-content-between justify-content-center-lg"
       >
         <li class="nav-item">
-          <a class="nav-link" href="advanced-search.html">Advanced Search</a>
+          <a class="nav-link" href="image-search.html">IMAGES</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="image-search.html">Image Search</a>
+          <a class="nav-link" href="advanced-search.html">ADVANCED SEARCH</a>
         </li>
       </ul>
     </nav>
-
+    <hr
+      style="
+        background-color: #393939;
+        height: 0.8px;
+        width: 100%;
+        margin: 0;
+        margin-bottom: 40px;
+        opacity: 7%;
+      "
+    />
     <div class="actual-body">
       <div id="logo">
-        <div style="white-space: nowrap; letter-spacing: -0.13em">
-          <span style="color: #4285f4">G</span>
-          <span style="color: #db4437">o</span>
-          <span style="color: #f4b400">o</span>
-          <span style="color: #4285f4">g</span>
-          <span style="color: #0f9d58">l</span>
-          <span style="color: #db4437">e</span>
-        </div>
+        <img src="static/img/Google_2015_logo.svg" alt="Google logo" />
       </div>
       <form action="https://www.google.com/search">
         <input
           type="text"
           name="q"
           id="search"
+          autocomplete="on"
           autofocus
-          style="padding-left: 20px"
+          placeholder="Find what you're looking for..."
+          style="
+            padding-left: 80px;
+            height: 75px;
+            border-radius: 60px;
+            box-shadow: rgba(0, 0, 0, 0.09) 0px 3px 12px;
+            background-image: url(static/img/Google__G__Logo.svg);
+            background-size: 30px 30px;
+            background-repeat: no-repeat;
+            background-position: left 30px center;
+            margin-bottom: 40px;
+          "
         />
         <div>
           <input type="submit" value="Recherche Google" id="search_button" />
@@ -57,5 +71,16 @@
         </div>
       </form>
     </div>
+    <hr
+      style="
+        background-color: #393939;
+        height: 0.8px;
+        width: 100%;
+        margin: 0;
+        margin-bottom: 40px;
+        margin-top: 160px;
+        opacity: 7%;
+      "
+    />
   </body>
 </html>
