@@ -246,5 +246,32 @@
         opacity: 7%;
       "
     />
+    <script>
+      function submitForm(event) {
+        event.preventDefault(); // Prevent the default form submission
+
+        var inputs = document.querySelectorAll(".container input");
+        var query = "";
+
+        inputs.forEach(function (input) {
+          if (input.value.trim() !== "") {
+            query +=
+              input.name + "=" + encodeURIComponent(input.value.trim()) + "&";
+          }
+        });
+
+        // Remove the trailing '&' character
+        query = query.slice(0, -1);
+
+        var searchUrl = "https://www.google.com/search?" + query;
+        window.location.href = searchUrl; // Redirect to the search URL
+      }
+
+      // Listen for form submission event
+      var forms = document.querySelectorAll(".container form");
+      forms.forEach(function (form) {
+        form.addEventListener("submit", submitForm);
+      });
+    </script>
   </body>
 </html>
