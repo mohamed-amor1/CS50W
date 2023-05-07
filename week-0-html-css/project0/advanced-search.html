@@ -16,23 +16,28 @@
     <title>Recherche avancée Google</title>
   </head>
   <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-transparent">
-      <img
-        src="static/img/Google_2015_logo.svg"
-        style="margin-left: 20px; width: 5%"
-      />
-      <ul
-        class="navbar-nav ms-auto mb-2 mb-lg-0 justify-content-between justify-content-center-lg"
+    <nav class="navbar navbar-expand navbar-light bg-transparent">
+      <a href="index.html">
+        <img
+          src="static/img/Google_2015_logo.svg"
+          style="margin-left: 20px; width: 70px"
+        />
+      </a>
+      <div
+        class="navbar-collapse justify-content-center"
+        id="navbarSupportedContent"
       >
-        <li class="nav-item">
-          <a class="nav-link" href="index.html">HOME</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="image-search.html">IMAGES</a>
-        </li>
-      </ul>
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" href="index.html">HOME</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="advanced-search.html">ADVANCED SEARCH</a>
+          </li>
+        </ul>
+      </div>
     </nav>
-    <h5
+    <h4
       style="
         font-weight: 500;
         color: #d93025;
@@ -42,7 +47,7 @@
       "
     >
       Recherche avancée
-    </h5>
+    </h4>
     <hr
       style="
         background-color: #393939;
@@ -56,26 +61,23 @@
 
     <div class="container" style="font-family: Arial, Helvetica, sans-serif">
       <div class="row" style="line-height: 1.5em">
-        <div
-          class="col-sm-2 float-start"
-          style="font-size: 17px; font-weight: 500"
-        >
+        <div class="col float-start" style="font-size: 17px; font-weight: 500">
           Trouvez des pages avec…
         </div>
-
-        <div class="col-sm-5"></div>
+        <div class="col"></div>
         <div
-          class="col-sm-5"
+          class="col"
+          id="number0"
           style="font-size: 13px; font-weight: 700; color: rgb(119, 119, 119)"
         >
           Pour effectuer cette opération dans le champ de recherche...
         </div>
       </div>
       <div class="row align-items-start">
-        <div class="col-sm-2" style="line-height: 4.2em !important">
+        <div class="col" style="line-height: 4.2em !important">
           tous les mots suivants :
         </div>
-        <div class="col-sm-5">
+        <div class="col">
           <form class="d-flex" action="https://www.google.com/search">
             <input
               class="form-control input rounded-0"
@@ -90,7 +92,7 @@
             ></button>
           </form>
         </div>
-        <div class="col-sm-3">
+        <div class="col" id="number1" style="padding-top: 10px">
           Saisissez les mots importants :
           <span style="font-family: 'Source Code Pro', monospace !important"
             >terrier tricolore</span
@@ -98,10 +100,10 @@
         </div>
       </div>
       <div class="row align-items-start">
-        <div class="col-sm-2" style="line-height: 1.2em !important">
+        <div class="col" style="line-height: 1.2em !important">
           ce mot ou cette expression exact(e) :
         </div>
-        <div class="col-sm-5">
+        <div class="col">
           <form class="d-flex" action="https://www.google.com/search">
             <input
               class="form-control input rounded-0"
@@ -115,7 +117,7 @@
             ></button>
           </form>
         </div>
-        <div class="col-sm-3">
+        <div class="col" id="number2" style="padding-top: 10px">
           Ajoutez des guillemets autour des mots exacts :
           <span style="font-family: 'Source Code Pro', monospace !important"
             >"terrier"</span
@@ -123,10 +125,10 @@
         </div>
       </div>
       <div class="row align-items-start">
-        <div class="col-sm-2" style="line-height: 4.2em !important">
+        <div class="col" style="line-height: 4.2em !important">
           l'un des mots suivants :
         </div>
-        <div class="col-sm-5" style="margin-top: 10px">
+        <div class="col" style="margin-top: 10px">
           <form class="d-flex" action="https://www.google.com/search">
             <input
               class="form-control input rounded-0"
@@ -140,7 +142,7 @@
             ></button>
           </form>
         </div>
-        <div class="col-sm-3">
+        <div class="col" id="number3" style="padding-top: 13px">
           Saisissez OR entre tous les mots à inclure :
           <span style="font-family: 'Source Code Pro', monospace !important"
             >miniature OR standard</span
@@ -148,10 +150,10 @@
         </div>
       </div>
       <div class="row align-items-start">
-        <div class="col-sm-2" style="line-height: 4.2em !important">
+        <div class="col" style="line-height: 4.2em !important">
           aucun des mots suivants :
         </div>
-        <div class="col-sm-5" style="margin-top: 10px">
+        <div class="col" style="margin-top: 10px">
           <form class="d-flex" action="https://www.google.com/search">
             <input
               class="form-control input rounded-0"
@@ -166,7 +168,7 @@
             ></button>
           </form>
         </div>
-        <div class="col-sm-3">
+        <div class="col" id="number4" style="padding-top: 12px">
           Placez un signe - (moins) devant les mots à exclure :
           <span style="font-family: 'Source Code Pro', monospace !important"
             >-rongeur, -"Jack Russell"</span
@@ -175,60 +177,48 @@
       </div>
 
       <div class="row align-items-start">
-        <div class="col-sm-2" style="line-height: 4.2em !important">
+        <div class="col" style="line-height: 4.2em !important">
           nombres compris entre :
         </div>
-
-        <div class="col-sm-5">
+        <div class="col">
           <form
-            class="form-check-inline"
+            class="form-inline"
             style="line-height: 0rem; margin-top: 5px; margin-right: 0px"
             action="https://www.google.com/search"
           >
-            <div class="form-check-inline">
-              <input
-                type="text"
-                class="form-control input rounded-0"
-                name="as_nlo"
-              />
-              <button
-                class="btn btn-outline-success"
-                type="submit"
-                hidden
-                formnovalidate
-              ></button>
-            </div>
-            <span class="mx-1" style="font-size: 15px; padding-left: 5px"
-              >et</span
-            >
-            <div
-              class="form-check-inline"
-              style="margin-left: 31px; margin-right: 0px"
-            >
-              <div class="form-group">
+            <div class="row">
+              <div class="col">
                 <input
+                  type="text"
                   class="form-control input rounded-0"
-                  type="checkbox"
-                  id="autoSizingCheck"
-                  hidden
+                  name="as_nlo"
                 />
               </div>
-              <input
-                type="text"
-                class="form-control input rounded-0"
-                name="as_nhi"
-              />
-              <button
-                class="btn btn-outline-success"
-                type="submit"
-                hidden
-                formnovalidate
-              ></button>
+              <div class="col-1" style="text-align: center">
+                <label
+                  for="as_nhi"
+                  style="font-size: 18px; line-height: 2em; text-align: center"
+                  >et</label
+                >
+              </div>
+              <div class="col">
+                <input
+                  type="text"
+                  class="form-control input rounded-0"
+                  name="as_nhi"
+                />
+              </div>
             </div>
+            <button
+              class="btn btn-outline-success"
+              type="submit"
+              hidden
+              formnovalidate
+            ></button>
           </form>
         </div>
 
-        <div class="col-sm-3">
+        <div class="col" id="number5" style="padding-top: 10px">
           Placez deux points entre les nombres, et ajoutez une unité de mesure :
           <span style="font-family: 'Source Code Pro', monospace !important"
             >10..35 kilos, 300..500 USD, 2010..2011</span
