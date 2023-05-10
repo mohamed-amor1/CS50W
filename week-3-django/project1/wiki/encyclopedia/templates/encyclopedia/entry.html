@@ -1,0 +1,12 @@
+{% extends "encyclopedia/layout.html" %} 
+{% block title %} 
+{{ title }} 
+{% endblock %} 
+{% block body %}
+{% load static %}
+
+<a href="{% url 'edit_page' title=title %}">
+    <img src="{% static 'encyclopedia/edit-page.svg' %}" style="width:20px;"/> Edit Page
+</a>
+<div>{{ html_content|safe }}</div>
+{% endblock %}
