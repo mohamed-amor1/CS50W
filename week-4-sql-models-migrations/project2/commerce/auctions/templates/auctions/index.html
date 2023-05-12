@@ -1,0 +1,24 @@
+{% extends "auctions/layout.html" %} {% block body %}
+<h2>Active Listings</h2>
+
+{% for listing in listings %}
+<div
+  class="row"
+  style="border: 2px solid gainsboro; margin: 5px; border-radius: 0.2em"
+>
+  <div class="col-3">
+    <img
+      src="{{ listing.image }}"
+      alt="Listing Image"
+      class="img-fluid"
+      style="width: 300px"
+    />
+  </div>
+  <div class="col">
+    <h4 style="padding-top: 20px">{{ listing.title }}</h4>
+    <h6 style="padding-top: 10px">Price: ${{ listing.current_price }}</h6>
+    <p style="padding-top: 20px"> {{ listing.description }} </p>
+    <p style="color: gray">Created {{ listing.start_date }}</p>
+  </div>
+</div>
+{% endfor %} {% endblock %}

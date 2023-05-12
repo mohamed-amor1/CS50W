@@ -1,0 +1,26 @@
+{% extends "auctions/layout.html" %} {% block body %}
+<div class="container">
+  <div class="row">
+    <div class="col">
+      {% if listing.image %}
+      <img
+        src="{{ listing.image }}"
+        alt="Listing Image"
+        class="img-fluid"
+        style="width: 400px"
+      />
+      {% endif %}
+    </div>
+    <div class="col">
+      <h6>Listing details</h6>
+      <h1>{{ listing.title }}</h1>
+      <h2>Description:</h2>
+      <p>{{ listing.description }}</p>
+      <h4>Seller: {{ listing.seller }}</h4>
+      <h3>Current Price: ${{ listing.current_price }}</h3>
+      <h4>Added: {{ listing.start_date }}</h4>
+      <h4>Available until {{ listing.end_date }}</h4>
+    </div>
+  </div>
+</div>
+{% endblock %}
