@@ -1,12 +1,13 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
-from .models import User, Listing, Bid, Comment
+from .models import User, Listing, Bid, Comment, Watchlist
 from .forms import CreateListingForm
 from datetime import datetime, timedelta
+from django.http import JsonResponse
 
 
 def index(request):
@@ -105,4 +106,35 @@ def create_listing(request):
 
 def listing_page(request, id):
     listing = Listing.objects.get(pk=id)
-    return render(request, "auctions/listing_page.html", {"listing": listing})
+    if request.user.is_authenticated:
+        watchlist = Watchlist.objects.filter(
+            user=request.user, listings=listing
+        ).first()
+    else:
+        watchlist = None
+    return render(
+        request,
+        "auctions/listing_page.html",
+        {
+            "listing": listing,
+            "watchlist": watchlist,
+        },
+    )
+
+
+@login_required
+def watchlist(request):
+    if request.method == "POST":
+        listing_id = request.POST.get("listing_id")
+        try:
+            listing = Listing.objects.get(id=listing_id)
+        except Listing.DoesNotExist:
+            return redirect("watchlist")
+
+        watchlist, _ = Watchlist.objects.get_or_create(user=request.user)
+        watchlist.listings.add(listing)
+
+        return redirect("watchlist")
+
+    watchlist = Watchlist.objects.filter(user=request.user)
+    return render(request, "auctions/watchlist.html", {"watchlist": watchlist})

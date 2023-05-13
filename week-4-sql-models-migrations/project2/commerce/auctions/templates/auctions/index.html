@@ -15,7 +15,9 @@
     />
   </div>
   <div class="col">
+<a href="{% url 'listing_page' listing.id %}">
     <h4 style="padding-top: 20px">{{ listing.title }}</h4>
+</a>
     <h6 style="padding-top: 10px">Price: ${{ listing.current_price }}</h6>
     <p style="padding-top: 20px"> {{ listing.description }} </p>
     <p style="color: gray">Created {{ listing.start_date }}</p>

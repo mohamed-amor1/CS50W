@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Listing, Bid, Comment
+from .models import Listing, Bid, Comment, Watchlist
 
 
 # Register your models here.
@@ -17,3 +17,4 @@ class ListingAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Listing, ListingAdmin)
+admin.site.register(Watchlist)

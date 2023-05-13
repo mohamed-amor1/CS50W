@@ -1,26 +1,44 @@
 {% extends "auctions/layout.html" %} {% block body %}
-<div class="container">
-  <div class="row">
-    <div class="col">
-      {% if listing.image %}
-      <img
-        src="{{ listing.image }}"
-        alt="Listing Image"
-        class="img-fluid"
-        style="width: 400px"
-      />
-      {% endif %}
-    </div>
-    <div class="col">
-      <h6>Listing details</h6>
-      <h1>{{ listing.title }}</h1>
-      <h2>Description:</h2>
-      <p>{{ listing.description }}</p>
-      <h4>Seller: {{ listing.seller }}</h4>
-      <h3>Current Price: ${{ listing.current_price }}</h3>
-      <h4>Added: {{ listing.start_date }}</h4>
-      <h4>Available until {{ listing.end_date }}</h4>
-    </div>
-  </div>
+<h2>Listing: {{ listing.title }}</h2>
+{% if listing.image %} {% if watchlist %}
+<div
+  style="
+    background-color: gray;
+    color: white;
+    padding: 3px;
+    width: 85px;
+    border-radius: 10px;
+    height: 30px;
+    align-items: center;
+    font-weight: 600;
+    text-align: center;
+  "
+>
+  <p>Watchlist</p>
 </div>
-{% endblock %}
+{% endif %}
+<div style="display: flex; justify-content: left">
+  <img
+    src="{{ listing.image }}"
+    alt="Listing Image"
+    class="img-fluid"
+    style="width: 300px"
+  />
+  {% endif %}
+</div>
+<h2>Description:</h2>
+<p>{{ listing.description }}</p>
+<h4>Seller: {{ listing.seller }}</h4>
+<h3>Current Price: ${{ listing.current_price }}</h3>
+<h4>Added: {{ listing.start_date }}</h4>
+<h4>Available until {{ listing.end_date }}</h4>
+{% if watchlist %}
+<p>This listing is already in your watchlist.</p>
+{% else %}
+<p>This listing is not in your watchlist.</p>
+<form method="POST" action="{% url 'watchlist' %}">
+  {% csrf_token %}
+  <input type="hidden" name="listing_id" value="{{ listing.id }}" />
+  <button type="submit" class="btn btn-primary">Add to Watchlist</button>
+</form>
+{% endif %} {% endblock %}

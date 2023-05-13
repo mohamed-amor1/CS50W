@@ -67,3 +67,12 @@ class Comment(models.Model):
 
     def __str__(self):
         return f"Comment on '{self.listing.title}' by {self.commenter.username}"
+
+
+class Watchlist(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
+    listings = models.ManyToManyField(Listing, blank=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Watchlist - {self.user.username}"
