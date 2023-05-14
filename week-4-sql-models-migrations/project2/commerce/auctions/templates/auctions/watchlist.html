@@ -1,21 +1,30 @@
 {% extends "auctions/layout.html" %}
 {% block body %}
-<h2>Watchlist</h2>
-{% if watchlist %}
-  {% for watchlist_item in watchlist %}
-  <div class="row" style="border: 2px solid gainsboro; margin: 5px; border-radius: 0.2em">
-    <div class="col-3">
-      <img src="{{ watchlist_item.listings.first.image }}" alt="Listing Image" class="img-fluid" style="width: 300px" />
-    </div>
-    <div class="col">
-      <h4 style="padding-top: 20px">{{ watchlist_item.listings.first.title }}</h4>
-      <h6 style="padding-top: 10px">Price: ${{ watchlist_item.listings.first.current_price }}</h6>
-      <p style="padding-top: 20px">{{ watchlist_item.listings.first.description }}</p>
-      <p style="color: gray">Created {{ watchlist_item.listings.first.start_date }}</p>
-    </div>
-  </div>
-  {% endfor %}
-{% else %}
-  <p>Your Watchlist is empty.</p>
-{% endif %}
+  <h2>Watchlist</h2>
+  {% if watchlist.exists %}
+    {% for watchlist_item in watchlist %}
+      {% for listing in watchlist_item.listings.all %}
+        <div class="row" style="border: 2px solid gainsboro; margin: 5px; border-radius: 0.2em">
+          <div class="col-3 d-flex align-items-center">
+            <img src="{{ listing.image }}" alt="Listing Image" class="img-fluid" style="width: 300px; padding: 30px" />
+          </div>
+          <div class="col">
+            <a href="{% url 'listing_page' listing.id %}">
+              <h4 style="padding-top: 20px">{{ listing.title }}</h4>
+            </a>
+            <h6 style="padding-top: 10px">Price: ${{ listing.current_price }}</h6>
+            <p style="padding-top: 20px">{{ listing.description }}</p>
+            <p style="color: gray">Created {{ listing.start_date }}</p>
+            <form method="POST" action="{% url 'watchlist' %}" name="deleteForm">
+              {% csrf_token %}
+              <input type="hidden" name="listing_id" value="{{ listing.id }}" />
+              <button type="submit" class="btn btn-danger" name="deleteForm" style="margin-top: 20px;margin-bottom: 20px">Delete from Watchlist</button>
+            </form>
+          </div>
+        </div>
+      {% endfor %}
+    {% endfor %}
+  {% else %}
+    <p class="message">Your Watchlist is empty.</p>
+  {% endif %}
 {% endblock %}

@@ -1,13 +1,35 @@
 {% extends "auctions/layout.html" %}
 
+{% load widget_tweaks %}
+
 {% block body %}
-     <h2>Create Listing</h2>
+  <h2 class="text-center">Create Listing</h2>
 
+  <div class="container">
     <form method="POST">
-        
+      {% csrf_token %}
+      <div class="form-group">
+        <label for="{{ form.title.id_for_label }}">Title</label>
+        {% render_field form.title class="form-control text-left" %}
+      </div>
+      <div class="form-group">
+        <label for="{{ form.description.id_for_label }}">Description</label>
+        {% render_field form.description class="form-control text-left" %}
+      </div>
+      <div class="form-group">
+  <label for="{{ form.starting_bid.id_for_label }}">Price</label>
+  {% render_field form.starting_bid class="form-control" %}
+</div>
 
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Create</button>
+      <div class="form-group">
+        <label for="{{ form.image.id_for_label }}">Image URL</label>
+        {% render_field form.image class="form-control text-left" %}
+      </div>
+      <div class="form-group">
+        <label for="{{ form.category.id_for_label }}">Category</label>
+        {% render_field form.category class="form-control text-left" %}
+      </div>
+      <button type="submit" class="btn btn-primary">Create</button>
     </form>
+  </div>
 {% endblock %}

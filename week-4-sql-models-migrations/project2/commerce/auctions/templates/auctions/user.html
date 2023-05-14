@@ -1,0 +1,55 @@
+{% extends "auctions/layout.html" %} {% block body %}
+<div class="seller-info">
+  <h3 style="margin-bottom: 30px">Seller information</h3>
+  <div class="seller-details">
+    <h4>Username:</h4>
+    <p>{{ seller.username }}</p>
+    <h4>Name:</h4>
+    <p>{{ seller.first_name }} {{ seller.last_name }}</p>
+    <h4>Email:</h4>
+    <p>{{ seller.email }}</p>
+    <h4>Date joined:</h4>
+    <p>{{ seller.date_joined }}</p>
+  </div>
+</div>
+
+<h3 style="margin-top: 40px">All items:</h3>
+
+<div class="container">
+  <div class="row">
+    {% for listing in listings %}
+    <div class="col-md-6 col-lg-4 mb-4">
+      <div class="card h-100">
+        <img
+          class="card-img-top"
+          src="{{ listing.image }}"
+          alt="Listing Image"
+        />
+        <div class="card-body">
+          <h5 class="card-title">{{ listing.title }}</h5>
+          <h6 class="card-subtitle mb-2 text-muted">
+            Price: ${{ listing.current_price }}
+          </h6>
+          <p class="card-text">{{ listing.description }}</p>
+          <a href="{% url 'listing_page' listing.id %}" class="btn btn-primary"
+            >View Listing</a
+          >
+        </div>
+        <div class="card-footer">
+          <small class="text-muted">Added {{ listing.start_date }}</small>
+        </div>
+      </div>
+    </div>
+    {% empty %}
+    <div class="col">
+      <div class="card">
+        <div class="card-body">
+          <p class="card-text">No listings found.</p>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+{% endblock %}

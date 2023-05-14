@@ -132,9 +132,27 @@ def watchlist(request):
             return redirect("watchlist")
 
         watchlist, _ = Watchlist.objects.get_or_create(user=request.user)
-        watchlist.listings.add(listing)
 
-        return redirect("watchlist")
+        if "addForm" in request.POST:
+            watchlist.listings.add(listing)
+        elif "deleteForm" in request.POST:
+            watchlist.listings.remove(listing)
 
-    watchlist = Watchlist.objects.filter(user=request.user)
-    return render(request, "auctions/watchlist.html", {"watchlist": watchlist})
+    watchlist = Watchlist.objects.filter(user=request.user).prefetch_related("listings")
+    message = (
+        "You don't have any items in your watchlist." if not watchlist.exists() else ""
+    )
+    return render(
+        request, "auctions/watchlist.html", {"watchlist": watchlist, "message": message}
+    )
+
+
+def user(request, seller_id):
+    seller = get_object_or_404(User, id=seller_id)
+    listings = Listing.objects.filter(seller=seller)
+    return render(request, "auctions/user.html", {"seller": seller, "listings": listings})
+
+
+def categories(request):
+    categories = Listing.objects.values_list("category", flat=True).distinct()
+    return render(request, "auctions/categories.html", {"categories": categories})

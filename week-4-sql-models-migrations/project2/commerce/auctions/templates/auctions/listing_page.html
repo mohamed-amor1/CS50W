@@ -6,11 +6,12 @@
     background-color: gray;
     color: white;
     padding: 3px;
-    width: 85px;
+    width: 70px;
     border-radius: 10px;
-    height: 30px;
+    height: 25px;
     align-items: center;
     font-weight: 600;
+    font-size: small;
     text-align: center;
   "
 >
@@ -22,23 +23,34 @@
     src="{{ listing.image }}"
     alt="Listing Image"
     class="img-fluid"
-    style="width: 300px"
+    style="width: 500px; padding: 30px"
   />
   {% endif %}
 </div>
-<h2>Description:</h2>
 <p>{{ listing.description }}</p>
-<h4>Seller: {{ listing.seller }}</h4>
-<h3>Current Price: ${{ listing.current_price }}</h3>
+<h3>${{ listing.current_price }}</h3>
+<h4>Details</h4>
+<ul>
+  <li>Listed by: 
+    <a href="{% url 'user' listing.seller.id %}">{{ listing.seller }}</a>
+  </li>
+  <li>Category: {{ listing.category }}</li>
+</ul>
 <h4>Added: {{ listing.start_date }}</h4>
 <h4>Available until {{ listing.end_date }}</h4>
+{% if user.is_authenticated %}
 {% if watchlist %}
 <p>This listing is already in your watchlist.</p>
 {% else %}
 <p>This listing is not in your watchlist.</p>
-<form method="POST" action="{% url 'watchlist' %}">
+<form method="POST" action="{% url 'watchlist' %}" name="addForm">
   {% csrf_token %}
   <input type="hidden" name="listing_id" value="{{ listing.id }}" />
-  <button type="submit" class="btn btn-primary">Add to Watchlist</button>
+  <button type="submit" class="btn btn-primary" name="addForm">
+    Add to Watchlist
+  </button>
 </form>
-{% endif %} {% endblock %}
+{% endif %} 
+{% endif %} 
+
+{% endblock %}

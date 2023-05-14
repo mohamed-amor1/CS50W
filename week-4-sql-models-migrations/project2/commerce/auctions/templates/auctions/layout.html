@@ -4,13 +4,41 @@
 <html lang="en">
   <head>
     <title>{% block title %}Auctions{% endblock %}</title>
+    <link href="{% static 'auctions/styles.css' %}" rel="stylesheet" />
+
     <link
       rel="stylesheet"
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
       integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
       crossorigin="anonymous"
     />
-    <link href="{% static 'auctions/styles.css' %}" rel="stylesheet" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Inter Tight", sans-serif;
+        padding: 20px;
+      }
+      .card {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+      }
+
+      .card-body {
+        flex-grow: 1;
+      }
+
+      .card-footer {
+        margin-top: auto;
+      }
+    </style>
   </head>
   <body>
     <h1>Auctions</h1>
@@ -18,16 +46,26 @@
       {% if user.is_authenticated %} Signed in as
       <strong>{{ user.username }}</strong>. {% else %} Not signed in. {% endif %}
     </div>
-    <ul class="nav">
+    <ul class="nav" >
       <li class="nav-item">
         <a class="nav-link" href="{% url 'index' %}">Active Listings</a>
       </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'categories' %}">Categories</a>
+      </li>
       {% if user.is_authenticated %}
       <li class="nav-item">
-        <a class="nav-link" href="{% url 'watchlist' %}">Watchlist</a>
+        <a class="nav-link" href="{% url 'watchlist' %}"
+          >Watchlist {% if watchlist_count > 0 %}
+          <span class="badge bg-secondary text-white ml-0"
+            >{{ watchlist_count }}</span
+          >
+          {% endif %}
+        </a>
       </li>
+
       <li class="nav-item">
-        <a class="nav-link" href="{% url 'create_listing' %}">Create Listing</a>
+        <a class="nav-link" href="{% url 'create_listing' %}">List your item</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="{% url 'logout' %}">Log Out</a>

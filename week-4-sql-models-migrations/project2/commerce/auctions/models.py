@@ -70,8 +70,8 @@ class Comment(models.Model):
 
 
 class Watchlist(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
-    listings = models.ManyToManyField(Listing, blank=True)
+    user = models.ForeignKey(User, related_name="watchlists", on_delete=models.CASCADE)
+    listings = models.ManyToManyField(Listing, blank=True, related_name="watchlists")
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
