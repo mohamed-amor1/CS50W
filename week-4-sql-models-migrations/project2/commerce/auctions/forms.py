@@ -44,7 +44,7 @@ class CommentForm(forms.ModelForm):
                 attrs={
                     "rows": 3,
                     "placeholder": "Your comment",
-                    "class": "form-control comment-form",
+                    "class": "form-control comment-form ",
                 }
             ),
         }  # Customize the 'text' field widget appearance
@@ -58,7 +58,7 @@ class BidForm(forms.ModelForm):
     amount = forms.FloatField(
         widget=forms.TextInput(
             attrs={
-                "class": "form-control",
+                "class": "form-control bid-form",
                 "placeholder": "Bid",
             }
         )

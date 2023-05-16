@@ -28,33 +28,32 @@
         src="{{ listing.image }}"
         alt="Listing Image"
         class="img-fluid"
-        style="width: 500px; padding: 30px"
+        style="width: 400px; padding: 20px"
       />
       {% endif %}
     </div>
   </div>
-  <div class="col" style="line-height: 2rem">
+  <div class="col">
+    <h3>Item description from the seller</h3>
     <p>{{ listing.description }}</p>
     <h3>${{ listing.current_price }}</h3>
     {% if not listing.closed %}
     <p>
-        {{ bid_count }} bid(s) so far.
-        {% if highest_bid and request.user == highest_bid.bidder %}
-            <span>Your bid is the current bid.</span>
-        {% endif %}
+      {{ bid_count }} bid(s) so far. {% if highest_bid and request.user == highest_bid.bidder %}
+      <span>Your bid is the current bid.</span>
+      {% endif %}
     </p>
-{% endif %}
-
-{% if has_won %}
-<p class="text-success">Congratulations! You have won this auction. </p>
-{% endif %}
-
-    
+    {% endif %} {% if has_won %}
+    <p class="text-success">Congratulations! You have won this auction.</p>
+    {% endif %} 
     {% if user.is_authenticated and not listing.closed and not listing.seller == request.user %}
-    
+
     <form method="post">
       {% csrf_token %} {{ bid_form.as_p }}
-      <button type="submit" class="btn btn-primary">Place Bid</button>
+      <button type="submit" class="btn btn-primary" style="border-radius: 20px">
+        Place Bid
+      </button>
+
       <div id="bid-error-message" class="error-message"></div>
     </form>
     {% endif %}
@@ -64,66 +63,90 @@
         Listed by:
         <a href="{% url 'user' listing.seller.id %}">{{ listing.seller }}</a>
       </li>
-      <li>Category: <a href="{% url 'category_page' category=listing.category %}">{{ listing.category }}</a></li>
+      <li>
+        Category:
+        <a href="{% url 'category_page' category=listing.category %}"
+          >{{ listing.category }}</a
+        >
+      </li>
     </ul>
-    {% if not listing.closed %} 
+    {% if not listing.closed %}
 
     <h6>Available until {{ listing.end_date }}</h6>
-    {% else %} 
-    <h3>This listing is CLOSED</h3>
-    {%endif%}
-    {% if user.is_authenticated and not listing.closed %} {% if watchlist %}
+    {% else %}
+    <h3>This listing is closed.</h3>
+    {%endif%} {% if user.is_authenticated and not listing.closed %} {% if watchlist %}
     <p>This listing is already in your watchlist.</p>
     {% else %}
     <p>This listing is not in your watchlist.</p>
     <form method="POST" action="{% url 'watchlist' %}" name="addForm">
       {% csrf_token %}
       <input type="hidden" name="listing_id" value="{{ listing.id }}" />
-      <button type="submit" class="btn btn-primary" name="addForm">
+      <button
+        type="submit"
+        class="btn btn-outline-primary"
+        name="addForm"
+        style="width: 260px; border-radius: 30px"
+      >
         Add to Watchlist
       </button>
     </form>
     {% endif %} {% endif %}
-    <div style="margin-top: 30px;">
-     
-
-    {% if is_owner and not listing.closed %}
-<form action="{% url 'listing_page' listing.id %}" method="post">
-    {% csrf_token %}
-    <input type="hidden" name="close_auction" value="1">
-    <button type="submit" class="btn btn-warning">Close Auction</button>
-</form>
-{% endif %}
-{% if messages %}
-  {% for message in messages %}
-    {% if message.tags == 'error' %}
-      <div class="alert alert-danger" role="alert" style="margin-top: 30px;width:fit-content">
+    <div style="margin-top: 30px">
+      {% if is_owner and not listing.closed %}
+      <form action="{% url 'listing_page' listing.id %}" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="close_auction" value="1" />
+        <button
+          type="submit"
+          class="btn btn-warning"
+          style="border-radius: 20px; font-weight: 500"
+        >
+          Close Auction
+        </button>
+      </form>
+      {% endif %} {% if messages %} {% for message in messages %} {% if message.tags == 'error' %}
+      <div
+        class="alert alert-danger"
+        role="alert"
+        style="margin-top: 30px; width: fit-content"
+      >
         {{ message }}
       </div>
-    {% endif %}
-  {% endfor %}
-{% endif %}
-</div>
+      {% endif %} {% endfor %} {% endif %}
+    </div>
   </div>
 </div>
+<hr />
 
 <div class="comments">
-  <h3 style="margin-bottom: 40px; margin-top: 50px">Comments</h3>
+  <h3 class="mb-4">Comments</h3>
   {% if comments %}
-  <ul>
+  <ul class="list-group">
     {% for comment in comments %}
-    <li class="list-group-item">
+    <li
+      class="list-group-item"
+      style="
+        border-radius: 0px;
+        background-color: white;
+        height: fit-content;
+        margin: 5px;
+        border: 1px solid whitesmoke;
+        background-color: #f8f8f8;
+box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05);
+      "
+    >
       <div class="media">
         <img
-          class="mr-3"
+          class="mr-3 rounded-circle"
           src="{% static 'auctions/user-icon-svgrepo-com.svg' %}"
           alt="User avatar"
-          style="width: 20px; padding-top: 5px"
+          style="width: 40px"
         />
         <div class="media-body">
           <h5 class="mt-0 mb-1">{{ comment.commenter.username }}</h5>
           <p>{{ comment.text }}</p>
-          <p style="font-size: xx-small;">Date: {{ comment.timestamp }}</p>
+          <p class="text-muted small" style="margin-bottom: 0px;">Date: {{ comment.timestamp }}</p>
         </div>
       </div>
     </li>
@@ -133,13 +156,14 @@
   <p>No comments yet.</p>
   {% endif %}
 </div>
+<hr />
 
-<div class="comment-form" style="margin-top: 20px;">
-  <h4 class="text">Leave a Comment</h4>
+<div class="comment-form" style="margin-top: 20px">
+  <h4 class="text" style="margin-bottom: 30px">Leave a Comment</h4>
   {% if user.is_authenticated %}
   <form method="POST" class="form-horizontal">
     {% csrf_token %} {{ comment_form.as_p }}
-    <button type="submit" class="btn btn-primary">Submit</button>
+    <button type="submit" class="btn btn-primary">Post</button>
   </form>
   {% else %}
   <p>
