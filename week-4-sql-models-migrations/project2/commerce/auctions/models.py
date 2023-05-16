@@ -1,5 +1,10 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.http import HttpRequest
+from django.contrib.auth import get_user_model
+
+
+request = HttpRequest()
 
 
 class User(AbstractUser):
@@ -15,6 +20,8 @@ class Listing(models.Model):
     end_date = models.DateTimeField()
     seller = models.ForeignKey(User, on_delete=models.CASCADE, related_name="listings")
     image = models.URLField(blank=True, null=True)
+    closed = models.BooleanField(default=False)
+    winner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
 
     CATEGORY_CHOICES = (
         ("Fashion", "Fashion"),
@@ -55,15 +62,21 @@ class Bid(models.Model):
         return f"Bid on '{self.listing.title}' by {self.bidder.username}"
 
 
+from django.http import HttpRequest
+
+
 class Comment(models.Model):
     listing = models.ForeignKey(
         Listing, on_delete=models.CASCADE, related_name="comments"
     )
     commenter = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="comments"
+        get_user_model(), on_delete=models.CASCADE, related_name="comments"
     )
     text = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"Comment on '{self.listing.title}' by {self.commenter.username}"

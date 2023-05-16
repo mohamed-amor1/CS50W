@@ -1,56 +1,193 @@
-{% extends "auctions/layout.html" %} {% block body %}
+{% extends "auctions/layout.html" %} {% load static %} {% block body %}
+
 <h2>Listing: {{ listing.title }}</h2>
-{% if listing.image %} {% if watchlist %}
-<div
-  style="
-    background-color: gray;
-    color: white;
-    padding: 3px;
-    width: 70px;
-    border-radius: 10px;
-    height: 25px;
-    align-items: center;
-    font-weight: 600;
-    font-size: small;
-    text-align: center;
-  "
->
-  <p>Watchlist</p>
-</div>
+<div class="row">
+  {% if watchlist %}
+  <div
+    style="
+      background-color: gray;
+      color: white;
+      padding: 3px;
+      width: 70px;
+      border-radius: 10px;
+      height: 25px;
+      align-items: center;
+      font-weight: 600;
+      font-size: small;
+      text-align: center;
+      margin-left: 16px;
+    "
+  >
+    <p>Watchlist</p>
+  </div>
+  {% endif %}
+  <div class="col d-flex align-items-center justify-content-center">
+    {% if listing.image %}
+    <div style="display: flex; justify-content: left">
+      <img
+        src="{{ listing.image }}"
+        alt="Listing Image"
+        class="img-fluid"
+        style="width: 500px; padding: 30px"
+      />
+      {% endif %}
+    </div>
+  </div>
+  <div class="col" style="line-height: 2rem">
+    <p>{{ listing.description }}</p>
+    <h3>${{ listing.current_price }}</h3>
+    {% if not listing.closed %}
+    <p>
+        {{ bid_count }} bid(s) so far.
+        {% if highest_bid and request.user == highest_bid.bidder %}
+            <span>Your bid is the current bid.</span>
+        {% endif %}
+    </p>
 {% endif %}
-<div style="display: flex; justify-content: left">
-  <img
-    src="{{ listing.image }}"
-    alt="Listing Image"
-    class="img-fluid"
-    style="width: 500px; padding: 30px"
-  />
+
+{% if has_won %}
+<p class="text-success">Congratulations! You have won this auction. </p>
+{% endif %}
+
+    
+    {% if user.is_authenticated and not listing.closed and not listing.seller == request.user %}
+    
+    <form method="post">
+      {% csrf_token %} {{ bid_form.as_p }}
+      <button type="submit" class="btn btn-primary">Place Bid</button>
+      <div id="bid-error-message" class="error-message"></div>
+    </form>
+    {% endif %}
+    <h4 style="margin-top: 25px">Details</h4>
+    <ul>
+      <li>
+        Listed by:
+        <a href="{% url 'user' listing.seller.id %}">{{ listing.seller }}</a>
+      </li>
+      <li>Category: <a href="{% url 'category_page' category=listing.category %}">{{ listing.category }}</a></li>
+    </ul>
+    {% if not listing.closed %} 
+
+    <h6>Available until {{ listing.end_date }}</h6>
+    {% else %} 
+    <h3>This listing is CLOSED</h3>
+    {%endif%}
+    {% if user.is_authenticated and not listing.closed %} {% if watchlist %}
+    <p>This listing is already in your watchlist.</p>
+    {% else %}
+    <p>This listing is not in your watchlist.</p>
+    <form method="POST" action="{% url 'watchlist' %}" name="addForm">
+      {% csrf_token %}
+      <input type="hidden" name="listing_id" value="{{ listing.id }}" />
+      <button type="submit" class="btn btn-primary" name="addForm">
+        Add to Watchlist
+      </button>
+    </form>
+    {% endif %} {% endif %}
+    <div style="margin-top: 30px;">
+     
+
+    {% if is_owner and not listing.closed %}
+<form action="{% url 'listing_page' listing.id %}" method="post">
+    {% csrf_token %}
+    <input type="hidden" name="close_auction" value="1">
+    <button type="submit" class="btn btn-warning">Close Auction</button>
+</form>
+{% endif %}
+{% if messages %}
+  {% for message in messages %}
+    {% if message.tags == 'error' %}
+      <div class="alert alert-danger" role="alert" style="margin-top: 30px;width:fit-content">
+        {{ message }}
+      </div>
+    {% endif %}
+  {% endfor %}
+{% endif %}
+</div>
+  </div>
+</div>
+
+<div class="comments">
+  <h3 style="margin-bottom: 40px; margin-top: 50px">Comments</h3>
+  {% if comments %}
+  <ul>
+    {% for comment in comments %}
+    <li class="list-group-item">
+      <div class="media">
+        <img
+          class="mr-3"
+          src="{% static 'auctions/user-icon-svgrepo-com.svg' %}"
+          alt="User avatar"
+          style="width: 20px; padding-top: 5px"
+        />
+        <div class="media-body">
+          <h5 class="mt-0 mb-1">{{ comment.commenter.username }}</h5>
+          <p>{{ comment.text }}</p>
+          <p style="font-size: xx-small;">Date: {{ comment.timestamp }}</p>
+        </div>
+      </div>
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p>No comments yet.</p>
   {% endif %}
 </div>
-<p>{{ listing.description }}</p>
-<h3>${{ listing.current_price }}</h3>
-<h4>Details</h4>
-<ul>
-  <li>Listed by: 
-    <a href="{% url 'user' listing.seller.id %}">{{ listing.seller }}</a>
-  </li>
-  <li>Category: {{ listing.category }}</li>
-</ul>
-<h4>Added: {{ listing.start_date }}</h4>
-<h4>Available until {{ listing.end_date }}</h4>
-{% if user.is_authenticated %}
-{% if watchlist %}
-<p>This listing is already in your watchlist.</p>
-{% else %}
-<p>This listing is not in your watchlist.</p>
-<form method="POST" action="{% url 'watchlist' %}" name="addForm">
-  {% csrf_token %}
-  <input type="hidden" name="listing_id" value="{{ listing.id }}" />
-  <button type="submit" class="btn btn-primary" name="addForm">
-    Add to Watchlist
-  </button>
-</form>
-{% endif %} 
-{% endif %} 
+
+<div class="comment-form" style="margin-top: 20px;">
+  <h4 class="text">Leave a Comment</h4>
+  {% if user.is_authenticated %}
+  <form method="POST" class="form-horizontal">
+    {% csrf_token %} {{ comment_form.as_p }}
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+  {% else %}
+  <p>
+    You must be <a href="{% url 'login' %}">logged in</a> to post a comment.
+  </p>
+  {% endif %}
+</div>
+
+<script>
+  document
+    .getElementById("comment-form")
+    .addEventListener("submit", function (event) {
+      event.preventDefault(); // Prevent the default form submission
+
+      // Create a new FormData object
+      var formData = new FormData(this);
+
+      // Make an AJAX request to submit the form data
+      var xhr = new XMLHttpRequest();
+      xhr.open("POST", "", true);
+      xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+      xhr.onload = function () {
+        if (xhr.status === 200) {
+          // Reload the page to update the comments
+          location.reload();
+        }
+      };
+      xhr.send(formData);
+    });
+</script>
+<script>
+  document.querySelector("form").addEventListener("submit", function (event) {
+    event.preventDefault();
+    var amountInput = document.getElementById("id_amount");
+    var errorMessage = document.getElementById("bid-error-message");
+
+    var amount = parseFloat(amountInput.value);
+    var currentPrice = parseFloat("{{ listing.current_price }}");
+
+    if (amount > currentPrice) {
+      // Submit the form
+      this.submit();
+    } else {
+      // Display error message and apply red border
+      errorMessage.textContent = "Bid must be greater than the current price.";
+      amountInput.classList.add("error-border");
+    }
+  });
+</script>
 
 {% endblock %}

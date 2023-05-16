@@ -5,6 +5,11 @@
   <head>
     <title>{% block title %}Auctions{% endblock %}</title>
     <link href="{% static 'auctions/styles.css' %}" rel="stylesheet" />
+    <link
+      rel="icon"
+      href="{% static 'auctions/favicon.ico' %}"
+      type="image/x-icon"
+    />
 
     <link
       rel="stylesheet"
@@ -38,15 +43,72 @@
       .card-footer {
         margin-top: auto;
       }
+      .error-message {
+        color: #dc3545;
+      }
+
+      .error-border {
+        border-color: #dc3545;
+        border: 2px solid #dc3545;
+      }
+
+      .card {
+        transition: transform 0.3s;
+      }
+
+      .card:hover {
+        transform: translateY(-5px);
+      }
+
+      .card-img-top {
+        height: 200px;
+        object-fit: cover;
+      }
+
+      .card-title {
+        font-size: 1.2rem;
+        font-weight: bold;
+      }
+
+      .card-subtitle {
+        color: #888;
+        margin-bottom: 10px;
+      }
+
+      .card-text {
+        margin-bottom: 20px;
+      }
+
+      .card-footer {
+        background-color: #f8f9fa;
+        padding: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .text-muted {
+        font-size: 0.8rem;
+      }
+
+      .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+      }
+
+      .btn-primary:hover {
+        background-color: #0069d9;
+        border-color: #0062cc;
+      }
     </style>
   </head>
   <body>
     <h1>Auctions</h1>
     <div>
       {% if user.is_authenticated %} Signed in as
-      <strong>{{ user.username }}</strong>. {% else %} Not signed in. {% endif %}
+      <strong>{{ user.username }}</strong>. {% else %} Not signed in. {% endif%}
     </div>
-    <ul class="nav" >
+    <ul class="nav">
       <li class="nav-item">
         <a class="nav-link" href="{% url 'index' %}">Active Listings</a>
       </li>

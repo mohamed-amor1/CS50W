@@ -1,7 +1,14 @@
-{% extends "auctions/layout.html" %}
+{% extends "auctions/layout.html" %} 
 {% block body %}
-
-{% for category in categories %}
-{{ category }} </br>
-{% endfor %}
+  <div class="container my-5">
+    <div class="row">
+      {% for category in categories %}
+        <div class="col-md-4">
+          <a href="{% url 'category_page' category=category %}" class="category-button btn btn-info btn-lg mb-4 d-flex align-items-center justify-content-center">
+            <h3 class="mb-0">{{ category }}</h3>
+          </a>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
 {% endblock %}

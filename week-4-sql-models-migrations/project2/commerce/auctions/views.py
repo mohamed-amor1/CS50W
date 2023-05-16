@@ -5,9 +5,11 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from .models import User, Listing, Bid, Comment, Watchlist
-from .forms import CreateListingForm
+from .forms import CreateListingForm, CommentForm, BidForm
 from datetime import datetime, timedelta
 from django.http import JsonResponse
+from django.utils import timezone
+from django.contrib import messages
 
 
 def index(request):
@@ -105,19 +107,97 @@ def create_listing(request):
 
 
 def listing_page(request, id):
-    listing = Listing.objects.get(pk=id)
+    listing = get_object_or_404(Listing, pk=id)
+    error_message = ""
     if request.user.is_authenticated:
         watchlist = Watchlist.objects.filter(
             user=request.user, listings=listing
         ).first()
     else:
         watchlist = None
+
+    comments = Comment.objects.filter(listing=listing).order_by("timestamp")
+    bid_count = listing.bids.count()
+    highest_bid = listing.bids.order_by("-amount").first()
+
+    is_owner = False
+    has_won = False
+
+    if request.method == "POST":
+        comment_form = CommentForm(request.POST)
+        bid_form = BidForm(request.POST)
+
+        if comment_form.is_valid():
+            comment = comment_form.save(commit=False)
+            comment.commenter = request.user
+            comment.listing = listing
+            comment.save()
+            comment_form = CommentForm()
+
+        if bid_form.is_valid():
+            amount = bid_form.cleaned_data["amount"]
+            if amount > listing.current_price and not listing.closed:
+                listing.current_price = amount
+                listing.save()
+                highest_bid = Bid.objects.create(
+                    listing=listing,
+                    bidder=request.user,
+                    amount=amount,
+                    timestamp=timezone.now(),
+                )
+                return redirect("listing_page", id=id)
+            else:
+                bid_form.add_error(
+                    "amount", "Bid must be greater than the current price."
+                )
+
+        if request.user.is_authenticated and request.user == listing.seller:
+            if request.POST.get("close_auction"):
+                if not listing.closed:
+                    highest_bid = listing.bids.order_by("-amount").first()
+                    if highest_bid:
+                        listing.winner = highest_bid.bidder
+                        listing.closed = True
+                        listing.save()
+                        messages.success(
+                            request,
+                            f"Auction closed. Winner: {listing.winner.username}",
+                        )
+                    else:
+                        error_message = "Auction cannot be closed as there are no bids."
+                        messages.error(request, error_message)
+
+                    return redirect("listing_page", id=id)
+            else:
+                is_owner = True
+
+    else:
+        comment_form = CommentForm()
+        bid_form = BidForm()
+
+        if request.user.is_authenticated and request.user == listing.seller:
+            is_owner = True
+        elif (
+            request.user.is_authenticated
+            and listing.closed
+            and listing.winner_id == request.user.pk
+        ):
+            has_won = True
+
     return render(
         request,
         "auctions/listing_page.html",
         {
             "listing": listing,
             "watchlist": watchlist,
+            "comments": comments,
+            "comment_form": comment_form,
+            "bid_form": bid_form,
+            "bid_count": bid_count,
+            "highest_bid": highest_bid,
+            "is_owner": is_owner,
+            "has_won": has_won,
+            "error_message": error_message,
         },
     )
 
@@ -150,9 +230,51 @@ def watchlist(request):
 def user(request, seller_id):
     seller = get_object_or_404(User, id=seller_id)
     listings = Listing.objects.filter(seller=seller)
-    return render(request, "auctions/user.html", {"seller": seller, "listings": listings})
+    return render(
+        request, "auctions/user.html", {"seller": seller, "listings": listings}
+    )
 
 
 def categories(request):
-    categories = Listing.objects.values_list("category", flat=True).distinct()
+    categories = (
+        Listing.objects.values_list("category", flat=True)
+        .distinct()
+        .order_by("category")
+    )
     return render(request, "auctions/categories.html", {"categories": categories})
+
+
+def category_page(request, category):
+    listings = Listing.objects.filter(category=category)
+
+    return render(
+        request,
+        "auctions/category_page.html",
+        {"listings": listings, "category": category},
+    )
+
+
+@login_required
+def comments(request, listing_id):
+    listing = get_object_or_404(Listing, id=listing_id)
+    comments = Comment.objects.filter(listing=listing).order_by("-timestamp")
+
+    if request.method == "POST":
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.commenter = request.user
+            comment.listing = listing
+            comment.save()
+    else:
+        form = CommentForm()
+
+    return render(
+        request,
+        "auctions/listing_page.html",
+        {
+            "listing": listing,
+            "comments": comments,
+            "form": form,
+        },
+    )

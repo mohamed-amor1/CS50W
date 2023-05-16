@@ -1,8 +1,7 @@
 from django.contrib import admin
-from .models import Listing, Bid, Comment, Watchlist, User, AbstractUser
+from .models import Listing, Bid, Comment, Watchlist, User
 
 
-# Register your models here.
 class ListingAdmin(admin.ModelAdmin):
     list_display = (
         "title",
@@ -16,6 +15,14 @@ class ListingAdmin(admin.ModelAdmin):
     )
 
 
+class UserAdmin(admin.ModelAdmin):
+    list_display = ("username", "email", "is_staff", "is_active", "date_joined")
+    list_filter = ("is_staff", "is_active")
+    search_fields = ("username", "email")
+
+
 admin.site.register(Listing, ListingAdmin)
 admin.site.register(Watchlist)
-admin.site.register(User)
+admin.site.register(User, UserAdmin)
+admin.site.register(Comment)
+admin.site.register(Bid)

@@ -1,6 +1,6 @@
 from django import forms
 from django.core.validators import MinValueValidator
-from .models import Listing
+from .models import Listing, Comment, Bid
 
 
 class CreateListingForm(forms.Form):
@@ -21,3 +21,33 @@ class CreateListingForm(forms.Form):
     )
 
     category = forms.ChoiceField(label="Category", choices=Listing.CATEGORY_CHOICES)
+
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ("text",)
+        widgets = {
+            "text": forms.Textarea(
+                attrs={
+                    "rows": 3,
+                    "placeholder": "Your comment",
+                    "class": "form-control comment-form",
+                }
+            ),
+        }
+
+
+class BidForm(forms.ModelForm):
+    amount = forms.FloatField(
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "Bid",
+            }
+        )
+    )
+
+    class Meta:
+        model = Bid
+        fields = ("amount",)
