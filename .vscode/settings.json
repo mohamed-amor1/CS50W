@@ -1,10 +1,18 @@
 {
-  "indentRainbow.ignoreErrorLanguages": ["css", "html", "html5", "markdown"],
+  "indentRainbow.ignoreErrorLanguages": [
+    "javascript",
+    "css",
+    "html",
+    "html5",
+    "markdown"
+  ],
   "[python]": {
     "editor.defaultFormatter": "ms-python.black-formatter"
   },
   "python.formatting.provider": "none",
   "editor.bracketPairColorization.enabled": true,
   "editor.guides.bracketPairs": "active",
-  "editor.guides.bracketPairsHorizontal": "active"
+  "editor.guides.bracketPairsHorizontal": "active",
+  "indentRainbow.excludedLanguages": ["plaintext"],
+  "indentRainbow.colorOnWhiteSpaceOnly": true
 }

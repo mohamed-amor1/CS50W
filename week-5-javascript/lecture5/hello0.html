@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Hello</title>
+    <script>
+      // Define a function called hello()
+      function hello() {
+        // Get the reference to the <h1> element
+        const heading = document.querySelector("h1");
+
+        // Check if the current text content of the <h1> element is "Hello!"
+        if (heading.innerHTML === "Hello!") {
+          // If it is, change the text content to "Goodbye!"
+          heading.innerHTML = "Goodbye!";
+        } else {
+          // If it's not "Hello!", change the text content back to "Hello!"
+          heading.innerHTML = "Hello!";
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <!-- Display an <h1> element with the initial text content "Hello!" -->
+    <h1>Hello!</h1>
+    <button onclick="hello()">Click Here</button>
+  </body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Currency Exchange</title>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Add event listener to the form's submit event
+        document.querySelector("form").onsubmit = function () {
+          // Fetch exchange rates from the API
+          fetch("https://api.exchangerate-api.com/v4/latest/usd")
+            .then((response) => response.json())
+            .then((data) => {
+              // Get the selected currency from the input field and convert it to uppercase
+              const currency = document
+                .querySelector("#currency")
+                .value.toUpperCase();
+              // Get the exchange rate for the selected currency
+              const rate = data.rates[currency];
+              if (rate !== undefined) {
+                // Display the conversion result if a valid currency is selected
+                document.querySelector(
+                  "#result"
+                ).innerHTML = `1 USD is equal to ${rate.toFixed(
+                  3
+                )} ${currency}.`;
+              } else {
+                // Display an error message for an invalid currency
+                document.querySelector("#result").innerHTML =
+                  "Invalid currency.";
+              }
+            })
+            .catch((error) => {
+              // Log any errors that occur during the API request
+              console.log("Error:", error);
+            });
+
+          // Prevent the form from submitting and refreshing the page
+          return false;
+        };
+      });
+    </script>
+  </head>
+  <body>
+    <form>
+      <!-- Input field to enter the desired currency -->
+      <input id="currency" placeholder="Currency" type="text" />
+      <!-- Submit button to initiate the conversion -->
+      <input type="submit" value="Convert" />
+    </form>
+    <!-- Element to display the conversion result or error message -->
+    <div id="result"></div>
+  </body>
+</html>

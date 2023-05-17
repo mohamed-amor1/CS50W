@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Hello</title>
+    <script>
+      // Wait for the DOM to be fully loaded before executing the JavaScript code
+      document.addEventListener("DOMContentLoaded", function () {
+        // When the form is submitted, execute the function
+        document.querySelector("form").onsubmit = function () {
+          // Get the value entered in the input field with the id "name"
+          const name = document.querySelector("#name").value;
+          // Display an alert with a greeting message containing the entered name
+          alert(`Hello, ${name}!`);
+        };
+      });
+    </script>
+  </head>
+  <body>
+    <h1>Hello!</h1>
+    <form>
+      <!-- Input field for entering the name with autofocus enabled -->
+      <input autofocus id="name" placeholder="Name" type="text" />
+      <!-- Submit button for submitting the form -->
+      <input type="submit" />
+    </form>
+  </body>
+</html>

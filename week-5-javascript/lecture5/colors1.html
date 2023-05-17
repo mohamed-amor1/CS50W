@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Colors</title>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        // Add an event listener to the select element for the "change" event
+        document.querySelector("select").onchange = function () {
+          // When the select value changes, change the font color of the element with ID "hello"
+          document.querySelector("#hello").style.color = this.value;
+        };
+      });
+    </script>
+  </head>
+  <body>
+    <h1 id="hello">Hello!</h1>
+    <select>
+      <option value="black">Black</option>
+      <option value="red">Red</option>
+      <option value="green">Green</option>
+      <option value="blue">Blue</option>
+    </select>
+  </body>
+</html>
