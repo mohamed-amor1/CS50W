@@ -17,9 +17,11 @@ document.addEventListener("DOMContentLoaded", function () {
       });
   });
 
-  document
-    .querySelector("#archived")
-    .addEventListener("click", () => load_mailbox("archive"));
+  document.querySelector("#archived").addEventListener("click", () => {
+    load_mailbox("archive");
+
+    archive_email(); // Fetch and render the archived emails
+  });
   document.querySelector("#compose").addEventListener("click", compose_email);
 
   // By default, load the inbox
@@ -122,6 +124,20 @@ function inbox_email() {
     });
 }
 
+function archive_email() {
+  fetch("/emails/archive")
+    .then((response) => response.json())
+    .then((emails) => {
+      emails.forEach((email) => {
+        renderEmail(email);
+      });
+    })
+    .catch((error) => {
+      // Handle any errors that occurred during the fetch request
+      console.log("Error fetching archived emails:", error);
+    });
+}
+
 function read_email(email_id) {
   // Show the email view and hide other views
   document.querySelector("#emails-view").style.display = "block";
@@ -139,7 +155,8 @@ function read_email(email_id) {
 
       const details = document.createElement("div");
       const formattedEmailText = email.body.replace(/\n/g, "<br>");
-      details.innerHTML = `
+      if (email.archived === true) {
+        details.innerHTML = `
         <div><strong>From:</strong> ${email.sender}</div>
         <div><strong>To:</strong> ${email.recipients}</div>
         <div><strong>Subject:</strong> ${email.subject}</div>
@@ -149,7 +166,27 @@ function read_email(email_id) {
         <hr />
 
         <div>${formattedEmailText}</div>
+        <hr />
+
+        <button  class="btn btn-sm btn-outline-primary float-right" id="unarchive">Unarchive</button>
       `;
+      } else {
+        details.innerHTML = `
+        <div><strong>From:</strong> ${email.sender}</div>
+        <div><strong>To:</strong> ${email.recipients}</div>
+        <div><strong>Subject:</strong> ${email.subject}</div>
+        <div><strong>Timestamp:</strong> ${email.timestamp}</div>
+        <button class="btn btn-sm btn-outline-primary" id="reply">Reply</button>
+
+        <hr />
+
+        <div>${formattedEmailText}</div>
+        <hr />
+
+        <button  class="btn btn-sm btn-outline-primary float-right" id="archive">Archive</button>
+      `;
+      }
+
       document.querySelector("#emails-view").innerHTML = "";
 
       document.querySelector("#emails-view").append(details);
@@ -170,6 +207,36 @@ function read_email(email_id) {
           "#compose-body"
         ).value = `On ${email.timestamp} ${email.sender} wrote: \n${email.body}\n\n`;
       });
+
+   if (email.archived === true) {
+     // Attach event listener to the unarchive button
+     document.querySelector("#unarchive").addEventListener("click", () => {
+       // Handle unarchive functionality here
+       fetch(`/emails/${email_id}`, {
+         method: "PUT",
+         body: JSON.stringify({
+           archived: false,
+         }),
+       }).then(() => {
+         load_mailbox("inbox");
+         inbox_email();
+       });
+     });
+   } else {
+     // Attach event listener to the archive button
+     document.querySelector("#archive").addEventListener("click", () => {
+       // Handle archive functionality here
+       fetch(`/emails/${email_id}`, {
+         method: "PUT",
+         body: JSON.stringify({
+           archived: true,
+         }),
+       }).then(() => {
+         load_mailbox("inbox");
+         inbox_email();
+       });
+     });
+   }
 
       // Mark the email as read
       return fetch(`/emails/${email_id}`, {
