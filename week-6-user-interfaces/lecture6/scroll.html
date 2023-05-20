@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Paragraphs from 1 to 100</title>
+  </head>
+  <body>
+    <script>
+      for (let i = 1; i <= 100; i++) {
+        const paragraph = document.createElement("p");
+        paragraph.textContent = i;
+        document.body.appendChild(paragraph);
+      }
+
+      window.onscroll = () => {
+        if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
+          document.querySelector("body").style.background = "green";
+        } else {
+          document.querySelector("body").style.background = "white";
+        }
+      };
+    </script>
+  </body>
+</html>

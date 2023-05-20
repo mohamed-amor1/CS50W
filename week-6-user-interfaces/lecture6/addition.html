@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+
+    <!-- Include React and ReactDOM libraries -->
+    <script src="https://unpkg.com/react@16.14.0/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16.14.0/umd/react-dom.development.js"></script>
+
+    <!-- Include Babel library for JSX transpilation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.min.js"></script>
+
+    <style>
+      /* CSS styles for the app */
+      #app {
+        text-align: center;
+        font-family: sans-serif;
+      }
+
+      #problem {
+        font-size: 72px;
+      }
+
+      .incorrect {
+        color: #e3342f;
+      }
+
+      #winner {
+        font-size: 72px;
+        color: #38c172;
+      }
+    </style>
+
+    <title>Addition</title>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="text/babel">
+      // Define a React component called App
+      function App() {
+        // Use React useState hook to manage component state
+        const [state, setState] = React.useState({
+          num1: 2,
+          num2: 4,
+          response: "",
+          score: 0,
+          incorrect: false,
+        });
+
+        // Event handler for key press on input field
+        function inputKeyPress(event) {
+          if (event.key === "Enter") {
+            const answer = parseInt(state.response);
+            if (state.num1 + state.num2 === answer) {
+              // User got the question right, update state
+              setState({
+                ...state,
+                num1: Math.ceil(Math.random() * 10),
+                num2: Math.ceil(Math.random() * 10),
+                score: state.score + 1,
+                response: "",
+                incorrect: false,
+              });
+            } else {
+              // User got the question wrong, update state
+              setState({
+                ...state,
+                score: state.score - 1,
+                response: "",
+                incorrect: true,
+              });
+            }
+          }
+        }
+
+        // Event handler for input field change
+        function updateResponse(event) {
+          setState({
+            ...state,
+            response: event.target.value,
+          });
+        }
+
+        if (state.score === 10) {
+          // If the score reaches 10, display "You won!" message
+          return <div id="winner">You won!</div>;
+        }
+
+        // Render the component JSX
+        return (
+          <div>
+            <div className={state.incorrect ? "incorrect" : ""} id="problem">
+              {state.num1} + {state.num2}
+            </div>
+            <input
+              autoFocus={true}
+              onKeyPress={inputKeyPress}
+              onChange={updateResponse}
+              value={state.response}
+            />
+            <div>Score: {state.score}</div>
+          </div>
+        );
+      }
+
+      // Render the App component inside the #app element
+      ReactDOM.render(<App />, document.querySelector("#app"));
+    </script>
+  </body>
+</html>
