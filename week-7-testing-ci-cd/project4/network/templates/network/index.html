@@ -1,0 +1,61 @@
+{% extends "network/layout.html" %} {% block body %} {% load static %}
+<div id="all-posts" style="margin: 20px; display: none">
+  <h2>All Posts</h2>
+  <div
+    class="row"
+    style="
+      border: 1px solid #e5e7eb;
+      margin: 5px;
+      margin-bottom: 20px;
+      border-radius: 0.4em;
+    "
+    ;
+  >
+    <div class="col" style="padding: 10px">
+      <form id="compose-form" method="post" action="/">
+        {% csrf_token %}
+        <div class="form-group" style="font-size: 24px; font-weight: 500">
+          New Post
+        </div>
+        <textarea
+          class="form-control"
+          id="compose-body"
+          name="compose-body"
+          placeholder="Type a new post"
+        ></textarea>
+        <input type="hidden" name="form_id" value="compose-form" />
+        <!-- Add a hidden input field for form ID -->
+        <input type="submit" class="btn btn-primary" style="margin-top: 10px" />
+      </form>
+    </div>
+  </div>
+  <!-- Loop to display the posts -->
+  {% for post in posts %}
+  <div
+    class="row"
+    style="
+      border: 1px solid #e5e7eb;
+      margin: 5px;
+      margin-bottom: 20px;
+      border-radius: 0.4em;
+    "
+  >
+    <div class="col" style="padding: 10px">
+      <h4>{{ post.author }}</h4>
+      <div>{{ post.text }}</div>
+      <div style="color: gray">{{ post.timestamp }}</div>
+      <div class="likes-container">
+        <img
+          src="{% static 'network/red-heart-icon.svg' %}"
+          alt="Heart Icon"
+          width="20"
+          height="20"
+        />
+        <div class="likes-count" style="color:gray">{{ post.likes }}</div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+{% endblock %}

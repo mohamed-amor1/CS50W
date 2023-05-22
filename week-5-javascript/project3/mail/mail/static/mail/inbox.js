@@ -208,35 +208,35 @@ function read_email(email_id) {
         ).value = `On ${email.timestamp} ${email.sender} wrote: \n${email.body}\n\n`;
       });
 
-   if (email.archived === true) {
-     // Attach event listener to the unarchive button
-     document.querySelector("#unarchive").addEventListener("click", () => {
-       // Handle unarchive functionality here
-       fetch(`/emails/${email_id}`, {
-         method: "PUT",
-         body: JSON.stringify({
-           archived: false,
-         }),
-       }).then(() => {
-         load_mailbox("inbox");
-         inbox_email();
-       });
-     });
-   } else {
-     // Attach event listener to the archive button
-     document.querySelector("#archive").addEventListener("click", () => {
-       // Handle archive functionality here
-       fetch(`/emails/${email_id}`, {
-         method: "PUT",
-         body: JSON.stringify({
-           archived: true,
-         }),
-       }).then(() => {
-         load_mailbox("inbox");
-         inbox_email();
-       });
-     });
-   }
+      if (email.archived === true) {
+        // Attach event listener to the unarchive button
+        document.querySelector("#unarchive").addEventListener("click", () => {
+          // Handle unarchive functionality here
+          fetch(`/emails/${email_id}`, {
+            method: "PUT",
+            body: JSON.stringify({
+              archived: false,
+            }),
+          }).then(() => {
+            load_mailbox("inbox");
+            inbox_email();
+          });
+        });
+      } else {
+        // Attach event listener to the archive button
+        document.querySelector("#archive").addEventListener("click", () => {
+          // Handle archive functionality here
+          fetch(`/emails/${email_id}`, {
+            method: "PUT",
+            body: JSON.stringify({
+              archived: true,
+            }),
+          }).then(() => {
+            load_mailbox("inbox");
+            inbox_email();
+          });
+        });
+      }
 
       // Mark the email as read
       return fetch(`/emails/${email_id}`, {
