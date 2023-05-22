@@ -1,5 +1,7 @@
 {
   "indentRainbow.ignoreErrorLanguages": [
+    "YAML",
+    "yml",
     "javascript",
     "css",
     "html",
