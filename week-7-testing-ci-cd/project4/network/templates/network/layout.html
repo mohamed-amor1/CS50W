@@ -11,7 +11,6 @@
       crossorigin="anonymous"
     />
     <link href="{% static 'network/styles.css' %}" rel="stylesheet" />
-    <script src="{% static 'network/network.js' %}"></script>
     <style>
       body {
         font-family: Arial, Helvetica, sans-serif !important;
@@ -24,6 +23,34 @@
       .likes-count {
         margin-left: 5px;
       }
+      /* style.css */
+      #user-profile-view {
+        margin: 20px;
+      }
+
+      #user-profile-view h2 {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 10px;
+      }
+
+      #user-profile-view h3 {
+        font-size: 20px;
+        font-weight: bold;
+        margin-bottom: 10px;
+      }
+
+      #user-profile-view p {
+        margin-bottom: 5px;
+      }
+
+      .follower-count,
+      .following-count {
+        font-weight: bold;
+        color: #333;
+      }
+
+      /* Add appropriate styling for other elements as needed */
     </style>
   </head>
   <body>

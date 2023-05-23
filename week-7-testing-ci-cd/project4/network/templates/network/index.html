@@ -9,7 +9,6 @@
       margin-bottom: 20px;
       border-radius: 0.4em;
     "
-    ;
   >
     <div class="col" style="padding: 10px">
       <form id="compose-form" method="post" action="/">
@@ -41,7 +40,14 @@
     "
   >
     <div class="col" style="padding: 10px">
-      <h4>{{ post.author }}</h4>
+      <a
+        href="#"
+        class="user-profile-link"
+        data-username="{{ post.author.username }}"
+      >
+        <h4>{{ post.author }}</h4>
+      </a>
+
       <div>{{ post.text }}</div>
       <div style="color: gray">{{ post.timestamp }}</div>
       <div class="likes-container">
@@ -50,12 +56,33 @@
           alt="Heart Icon"
           width="20"
           height="20"
+          data-src="{% static 'network/red-heart-icon.svg' %}"
         />
-        <div class="likes-count" style="color:gray">{{ post.likes }}</div>
+        <div class="likes-count" style="color: gray">{{ post.likes }}</div>
       </div>
     </div>
   </div>
   {% endfor %}
 </div>
 
+<div id="user-profile-view" style="display: none; padding: 20px">
+  <div id="profile-details">
+    
+    <div id="follow-button-container">
+  {% if userProfileData.is_authenticated and userProfileData.username != userProfileData.current_username %}
+    <form id="follow-form" method="post" action="">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-outline-primary">Follow</button>
+    </form>
+  {% endif %}
+</div>
+
+
+    <!-- User profile details will be dynamically inserted here -->
+  </div>
+</div>
+
+<script src="{% static 'network/network2.js' %}"></script>
+
+<!-- Include the JavaScript file -->
 {% endblock %}
