@@ -4,7 +4,7 @@
 <html lang="en">
   <head>
     <title>{% block title %}Social Network{% endblock %}</title>
-    <meta name="csrf-token" content="{{ csrf_token }}">
+    <meta name="csrf-token" content="{{ csrf_token }}" />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <link
@@ -67,11 +67,17 @@
         <ul class="navbar-nav mr-auto">
           {% if user.is_authenticated %}
           <li class="nav-item">
-            <a class="nav-link" href="#"
-              ><strong>{{ user.username }}</strong></a
+            <a
+              id="my-profile"
+              class="nav-link user-profile-link"
+              href="#"
+              data-username="{{ user.username }}"
             >
+              <strong>{{ user.username }}</strong>
+            </a>
           </li>
           {% endif %}
+
           <li class="nav-item">
             <a class="nav-link" href="{% url 'index' %}" id="nav-all-posts"
               >All Posts</a

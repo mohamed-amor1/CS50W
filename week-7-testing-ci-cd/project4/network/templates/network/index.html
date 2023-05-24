@@ -12,7 +12,7 @@
       border-radius: 0.4em;
     "
   >
-            {% if user.is_authenticated %}
+    {% if user.is_authenticated %}
 
     <div class="col" style="padding: 10px">
       <form id="compose-form" method="post" action="/">
@@ -73,8 +73,7 @@
 <div id="user-profile-view" style="display: none; padding: 20px">
   <div id="profile-details">
     <div id="follow-button-container">
-      {% if userProfileData.is_authenticated and userProfileData.username != userProfileData.current_username %} 
-      {% if userProfileData.is_following %}
+      {% if userProfileData.is_authenticated and userProfileData.username != userProfileData.current_username %} {% if userProfileData.is_following %}
       <form id="unfollow-form" method="post">
         {% csrf_token %}
         <input

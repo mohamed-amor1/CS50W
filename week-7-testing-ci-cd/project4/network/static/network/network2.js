@@ -104,6 +104,94 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
+  document.querySelector("#my-profile").addEventListener("click", (event) => {
+    event.preventDefault();
+    const username = event.target.closest("#my-profile").dataset.username;
+
+    // Rest of the code...
+
+    // ...
+
+    fetchUserProfile(username)
+      .then((data) => {
+        userProfileData = data; // Assign fetched data to userProfileData
+        const followersCount = userProfileData.followers;
+        const followingCount = userProfileData.following;
+
+        // Update the user profile section dynamically
+        const profileDetailsContainer =
+          document.querySelector("#profile-details");
+        profileDetailsContainer.innerHTML = `
+        <h2>User Profile</h2>
+        <h3>Username: ${userProfileData.username}</h3>
+        <p>Email: ${userProfileData.email}</p>
+        <p class="follower-count">Followers: <span id="follower-count">${followersCount}</span></p>
+        <p class="following-count">Following: <span id="following-count">${followingCount}</span></p>
+        <div class="follow-container"></div>
+        <h3 style="margin-top:40px">Posts by ${userProfileData.username}</h3>
+        <div id="user-posts" class="posts-container"></div>
+      `;
+
+        const userPostsContainer = document.querySelector("#user-posts");
+        const posts = userProfileData.posts;
+
+        // Loop through the user's posts and append them to the user-posts container
+        for (let i = 0; i < posts.length; i++) {
+          const post = posts[i];
+          const postElement = document.createElement("div");
+          postElement.classList.add("row", "post-row");
+          postElement.innerHTML = `
+          <div class="col" style="border: 1px solid #e5e7eb; margin: 5px; margin-bottom: 20px; border-radius: 0.4em; padding: 10px;">
+            <h4>${post.author}</h4>
+            <div>${post.text}</div>
+            <div style="color: gray">${post.timestamp}</div>
+            <div class="likes-container">
+              <img src="/static/network/red-heart-icon.svg" alt="Heart Icon" width="20" height="20" />
+              <div class="likes-count" style="color: gray">${post.likes}</div>
+            </div>
+          </div>
+        `;
+          userPostsContainer.appendChild(postElement);
+        }
+
+        allPostsContainer.style.display = "none";
+        userProfileContainer.style.display = "block";
+
+        // Conditionally render the "Follow" or "Unfollow" button
+        if (
+          userProfileData.is_authenticated &&
+          userProfileData.username !== userProfileData.current_username
+        ) {
+          const followForm = document.createElement("form");
+          followForm.id = "unfollow-form"; // Update the ID to "unfollow-form"
+          followForm.method = "post";
+
+          if (userProfileData.is_following) {
+            // Check if the user is already following
+            followForm.innerHTML = `
+            <input type="hidden" name="username" value="${userProfileData.username}">
+            <button id="unfollow-button" type="submit" class="btn btn-outline-danger">Unfollow</button>
+          `;
+          } else {
+            followForm.id = "follow-form"; // Update the ID to "follow-form"
+
+            followForm.innerHTML = `
+            <input type="hidden" name="username" value="${userProfileData.username}">
+            <button id="follow-button" type="submit" class="btn btn-outline-primary">Follow</button>
+          `;
+          }
+
+          const followContainer = document.querySelector(".follow-container");
+          followContainer.innerHTML = "";
+          followContainer.appendChild(followForm);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        // Handle any errors that occur during the AJAX request
+      });
+  });
+
   document
     .querySelector("#profile-details")
     .addEventListener("submit", (event) => {
