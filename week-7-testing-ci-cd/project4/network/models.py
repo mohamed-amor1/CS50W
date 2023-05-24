@@ -30,6 +30,7 @@ class User(AbstractUser):
         return self.followers.filter(id=user.id).exists()
 
 
+
 class Post(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     text = models.TextField()

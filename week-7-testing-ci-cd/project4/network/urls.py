@@ -13,4 +13,5 @@ urlpatterns = [
         name="user_profile_json",
     ),
     path("follow/", views.follow_user, name="follow_user"),
+    path("unfollow/", views.unfollow_user, name="unfollow_user"),
 ]

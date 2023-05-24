@@ -1,6 +1,8 @@
 {% extends "network/layout.html" %} {% block body %} {% load static %}
+
 <div id="all-posts" style="margin: 20px; display: none">
   <h2>All Posts</h2>
+
   <div
     class="row"
     style="
@@ -10,6 +12,8 @@
       border-radius: 0.4em;
     "
   >
+            {% if user.is_authenticated %}
+
     <div class="col" style="padding: 10px">
       <form id="compose-form" method="post" action="/">
         {% csrf_token %}
@@ -27,7 +31,9 @@
         <input type="submit" class="btn btn-primary" style="margin-top: 10px" />
       </form>
     </div>
+    {%endif%}
   </div>
+
   <!-- Loop to display the posts -->
   {% for post in posts %}
   <div
@@ -47,7 +53,6 @@
       >
         <h4>{{ post.author }}</h4>
       </a>
-
       <div>{{ post.text }}</div>
       <div style="color: gray">{{ post.timestamp }}</div>
       <div class="likes-container">
@@ -67,22 +72,90 @@
 
 <div id="user-profile-view" style="display: none; padding: 20px">
   <div id="profile-details">
-    
     <div id="follow-button-container">
-  {% if userProfileData.is_authenticated and userProfileData.username != userProfileData.current_username %}
-    <form id="follow-form" method="post" action="">
-      {% csrf_token %}
-      <button type="submit" class="btn btn-outline-primary">Follow</button>
-    </form>
-  {% endif %}
-</div>
-
-
-    <!-- User profile details will be dynamically inserted here -->
+      {% if userProfileData.is_authenticated and userProfileData.username != userProfileData.current_username %} 
+      {% if userProfileData.is_following %}
+      <form id="unfollow-form" method="post">
+        {% csrf_token %}
+        <input
+          type="hidden"
+          name="username"
+          value="{{ userProfileData.username }}"
+        />
+        <button id="unfollow-button" class="btn btn-danger" type="submit">
+          Unfollow
+          <input
+            type="hidden"
+            name="csrfmiddlewaretoken"
+            value="{{ csrf_token }}"
+          />
+        </button>
+      </form>
+      {% else %}
+      <form id="follow-form" method="post">
+        {% csrf_token %}
+        <input
+          type="hidden"
+          name="username"
+          value="{{ userProfileData.username }}"
+        />
+        <button
+          id="follow-button"
+          type="submit"
+          class="btn btn-outline-primary"
+        >
+          Follow
+        </button>
+      </form>
+      {% endif %} {% endif %}
+    </div>
+    <div>
+      <p>
+        Followers:
+        <span id="follower-count">{{ userProfileData.followers_count }}</span>
+      </p>
+    </div>
   </div>
 </div>
 
-<script src="{% static 'network/network2.js' %}"></script>
+<script>
+  // Retrieve the CSRF token from the cookie
+  // Retrieve the CSRF token from the cookie
+  function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== "") {
+      var cookies = document.cookie.split(";");
+      for (var i = 0; i < cookies.length; i++) {
+        var cookie = cookies[i].trim();
+        // Does this cookie string begin with the name we want?
+        if (cookie.substring(0, name.length + 1) === name + "=") {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
 
+  // Set up AJAX requests to include the CSRF token in the headers
+  function setupAjaxCSRF() {
+    var csrftoken = getCookie("csrftoken");
+
+    // Set up AJAX requests to include the CSRF token in the headers
+    $.ajaxSetup({
+      beforeSend: function (xhr, settings) {
+        if (!this.crossDomain) {
+          xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        }
+      },
+    });
+  }
+
+  // Call the setupAjaxCSRF function to configure AJAX requests
+  setupAjaxCSRF();
+</script>
+
+<script src="{% static 'network/network2.js' %}"></script>
 <!-- Include the JavaScript file -->
+
 {% endblock %}

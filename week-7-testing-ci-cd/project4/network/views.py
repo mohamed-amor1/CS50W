@@ -1,16 +1,16 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
-from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render, redirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
-from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
-from django.middleware.csrf import get_token
-from .models import User, Post
-from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
+from .models import User, Post
+from django.middleware.csrf import get_token
+from django.views.decorators.csrf import csrf_protect
 
 
+@csrf_exempt
 def index(request):
     if request.method == "POST":
         form_id = request.POST.get("form_id")
@@ -58,12 +58,11 @@ def login_view(request):
         return render(request, "network/login.html")
 
 
+@csrf_exempt
 def user_profile_json(request, username):
     try:
         user = User.objects.get(username=username)
-        posts = Post.objects.filter(author=user).order_by(
-            "-timestamp"
-        )  # Retrieve posts in reverse chronological order
+        posts = Post.objects.filter(author=user).order_by("-timestamp")
         posts_data = []
 
         for post in posts:
@@ -75,22 +74,28 @@ def user_profile_json(request, username):
             }
             posts_data.append(post_data)
 
+        followers = [follower.username for follower in user.followers.all()]
+
+        following_users = [u.username for u in user.following.all()]
+
         user_profile_data = {
             "username": user.username,
             "email": user.email,
             "followers": user.followers.count(),
             "following": user.following.count(),
             "posts": posts_data,
-            "target_username": username,  # Add the target_username to the JSON response
+            "target_username": username,
+            "following_users": following_users,
         }
 
-        # Check the authentication status and current user's username
         is_authenticated = request.user.is_authenticated
         current_username = request.user.username
 
-        # Include the authentication status and current user's username in the user profile data
         user_profile_data["is_authenticated"] = is_authenticated
         user_profile_data["current_username"] = current_username
+
+        if is_authenticated:
+            user_profile_data["is_following"] = current_username in followers
 
         return JsonResponse(user_profile_data)
     except User.DoesNotExist:
@@ -129,19 +134,14 @@ def register(request):
         return render(request, "network/register.html")
 
 
+@csrf_protect
 @login_required
-@csrf_exempt
 def follow_user(request):
     if request.method == "POST":
         username = request.POST.get("username")
-
         target_user = get_object_or_404(User, username=username)
 
-        # Perform the follow action by updating the data
-        # Increase followers count of the target user
         target_user.followers.add(request.user)
-
-        # Increase following count of the authenticated user
         request.user.following.add(target_user)
 
         return JsonResponse(
@@ -149,6 +149,32 @@ def follow_user(request):
                 "success": True,
                 "action": "follow",
                 "message": "Follow action successful.",
+            },
+            status=200,
+        )
+
+    return JsonResponse({"success": False, "error": "Invalid request."}, status=400)
+
+
+@csrf_protect
+@login_required
+def unfollow_user(request):
+    if request.method == "POST":
+        username = request.POST.get("username")
+        target_user = get_object_or_404(User, username=username)
+
+        target_user.followers.remove(request.user)
+        request.user.following.remove(target_user)
+
+        target_user.save()  # Save the changes
+        request.user.save()  # Save the changes
+
+        return JsonResponse(
+            {
+                "success": True,
+                "action": "unfollow",
+                "message": "Unfollow action successful.",
+                "followers_count": target_user.followers.count(),
             },
             status=200,
         )
