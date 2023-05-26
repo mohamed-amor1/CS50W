@@ -3,36 +3,11 @@ from django.db import models
 
 
 class User(AbstractUser):
-    followers = models.ManyToManyField(
-        "self",
-        related_name="following",
-        symmetrical=False,
-        blank=True,
-    )
-
-    @property
-    def followers_count(self):
-        return self.followers.count()
-
-    @property
-    def following_count(self):
-        return self.following.count()
-
-    def follow(self, user):
-        if not self.is_following(user):
-            self.followers.add(user)
-
-    def unfollow(self, user):
-        if self.is_following(user):
-            self.followers.remove(user)
-
-    def is_following(self, user):
-        return self.followers.filter(id=user.id).exists()
-
+    pass
 
 
 class Post(models.Model):
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
-    text = models.TextField()
-    likes = models.PositiveIntegerField(default=0)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="author")
+    content = models.CharField(max_length=280)
     timestamp = models.DateTimeField(auto_now_add=True)
+    likes = models.ManyToManyField(User, related_name="liked_posts")

@@ -1,0 +1,48 @@
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Lato&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Nunito&display=swap");
+
+body {
+  font-family: "Nunito", sans-serif;
+}
+.navbar {
+  background: linear-gradient(
+    to right,
+    #00d2ff,
+    #3a7bd5
+  ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+.navbar-brand.mb-0.h1 {
+  color: white;
+}
+.nav-link {
+  color: white !important;
+}
+
+.nav-link:hover {
+  border-radius: 1000px;
+  background-color: #0072ff;
+}
+.card-text {
+  display: flex;
+  align-items: center;
+}
+
+.like-icon {
+  width: auto;
+  height: 2em;
+  margin-right: 0.5em;
+}
+
+.like-count {
+  font-size: 1em;
+  color: #aab8c2;
+  user-select: none !important;
+}
+
+.btn.btn-danger {
+  border-radius: 20px;
+  width: fit-content;
+  height: fit-content;
+  margin-left: 30px;
+}
