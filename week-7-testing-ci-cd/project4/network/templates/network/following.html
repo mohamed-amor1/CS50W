@@ -1,0 +1,107 @@
+{% extends "network/layout.html" %} 
+{% block head %}
+<meta name="csrf-token" content="{{ csrf_token }}" />
+{% endblock %} 
+
+{% block body %}
+<div class="container-fluid">
+  <h2 style="margin-top: 20px; color: #111827">Following</h2>
+  <hr />
+</div>
+
+<div class="container-fluid">
+  {% for post in page_obj %}
+  <div class="card mb-4">
+    <div class="card-body">
+      <h5 class="card-title">
+        <a href="{% url 'profile' post.user.username %}">
+          @{{ post.user.username }}
+        </a>
+      </h5>
+      <p class="card-text">{{ post.content }}</p>
+      <p class="card-text text-muted">
+        <small>Posted on: {{ post.timestamp }}</small>
+      </p>
+      <p class="card-text">
+        <svg class="like-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 54 72">
+          <path
+            fill="#E81C4F"
+            d="M38.723,12c-7.187,0-11.16,7.306-11.723,8.131C26.437,19.306,22.504,12,15.277,12C8.791,12,3.533,18.163,3.533,24.647 C3.533,39.964,21.891,55.907,27,56c5.109-0.093,23.467-16.036,23.467-31.353C50.467,18.163,45.209,12,38.723,12z"
+          />
+        </svg>
+        <span class="like-count" data-post-id="{{ post.id }}">
+          {{ post.likes.count }}
+        </span>
+        {% if request.user.is_authenticated %}
+        {% if post.id in liked_post_ids %}
+        <button
+          id="like-button-{{ post.id }}"
+          class="btn btn-danger"
+          data-post-id="{{ post.id }}"
+          data-liked="true"
+        >
+          Unlike
+        </button>
+        {% else %}
+        <button
+          id="like-button-{{ post.id }}"
+          class="btn btn-danger"
+          data-post-id="{{ post.id }}"
+          data-liked="false"
+        >
+          Like
+        </button>
+        {% endif %}
+        <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+        {% endif %}
+      </p>
+    </div>
+  </div>
+  {% empty %}
+  <p>No posts available.</p>
+  {% endfor %}
+</div>
+
+<div class="pagination justify-content-center">
+  <ul class="pagination">
+    {% if page_obj.has_previous %}
+    <li class="page-item">
+      <a
+        class="page-link"
+        href="?page={{ page_obj.previous_page_number }}"
+        aria-label="Previous"
+      >
+        <span aria-hidden="true">&laquo;</span>
+        <span class="sr-only">Previous</span>
+      </a>
+    </li>
+    {% endif %} 
+    {% for num in page_obj.paginator.page_range %} 
+    {% if page_obj.number == num %}
+    <li class="page-item active" aria-current="page">
+      <span class="page-link">
+        {{ num }} <span class="sr-only">(current)</span>
+      </span>
+    </li>
+    {% else %}
+    <li class="page-item">
+      <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+    </li>
+    {% endif %} 
+    {% endfor %}
+    {% if page_obj.has_next %}
+    <li class="page-item">
+      <a
+        class="page-link"
+        href="?page={{ page_obj.next_page_number }}"
+        aria-label="Next"
+      >
+        <span aria-hidden="true">&raquo;</span>
+        <span class="sr-only">Next</span>
+      </a>
+    </li>
+    {% endif %}
+  </ul>
+</div>
+
+{% endblock %}

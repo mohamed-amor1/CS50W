@@ -1,0 +1,201 @@
+{% extends "network/layout.html" %} 
+{% block head %}
+<meta name="csrf-token" content="{{ csrf_token }}" />
+{% endblock %} 
+{% block body %}
+<div class="container-fluid">
+
+
+    <h2 style="margin-top: 20px; ">{{ user.username }}'s Profile</h2>
+
+<div id="follow-badge-container">
+
+  {% if request.user.is_authenticated and user != request.user %}
+    {% if is_following %}
+      <form method="POST" action="{% url 'unfollow' user.id %}">
+        {% csrf_token %}
+        <button style="border:none" type="submit" class="badge badge-secondary" id="follow-badge" data-unfollow-url="{% url 'unfollow' user.id %}">Unfollow</button>
+      </form>
+    {% else %}
+      <form method="POST" action="{% url 'follow' user.id %}">
+        {% csrf_token %}
+        <button style="border:none" type="submit" class="badge badge-primary" id="follow-badge" data-follow-url="{% url 'follow' user.id %}">Follow</button>
+      </form>
+    {% endif %}
+  {% endif %}
+</div>
+
+
+
+
+
+  <hr />
+  <div class="card" style="border-radius: 30px;">
+    <div class="card-body">
+        <div class="row">
+    <div class="col text-center">
+    <div><h3>Followers</h3></div>
+        <div><h3><span class="badge bg-primary text-light" id="followers-count">{{ followers }}</span></span></h3></div>
+
+</div>
+
+
+ <div class="col text-center">
+    <div><h3>Following</h3></div>
+        <div><h3><span class="badge bg-primary text-light" id="following-count">{{ following }}</span></h3></div>
+
+</div>
+
+      </div>
+    </div>
+  </div>
+
+
+  <hr />
+
+  <h2>Posts:</h2>
+  {% for post in page_obj %}
+  <div class="card mb-4">
+    <div class="card-body">
+      <h5 class="card-title">
+        <a href="{% url 'profile' post.user.username %}"
+          >@{{ post.user.username }}</a
+        >
+      </h5>
+      <p class="card-text">{{ post.content }}</p>
+      <p class="card-text text-muted">
+        <small>Posted on: {{ post.timestamp }}</small>
+      </p>
+      <p class="card-text">
+        <svg
+          class="like-icon"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 54 72"
+        >
+          <path
+            fill="#E81C4F"
+            d="M38.723,12c-7.187,0-11.16,7.306-11.723,8.131C26.437,19.306,22.504,12,15.277,12C8.791,12,3.533,18.163,3.533,24.647 C3.533,39.964,21.891,55.907,27,56c5.109-0.093,23.467-16.036,23.467-31.353C50.467,18.163,45.209,12,38.723,12z"
+          />
+        </svg>
+        <span class="like-count" data-post-id="{{ post.id }}">
+          {{ post.likes.count }}
+        </span>
+        {% if request.user.is_authenticated %} 
+        {% if post.id in liked_post_ids %}
+        <button
+          id="like-button-{{ post.id }}"
+          class="btn btn-danger"
+          data-post-id="{{ post.id }}"
+          data-liked="true"
+        >
+          Unlike
+        </button>
+        {% else %}
+        <button
+          id="like-button-{{ post.id }}"
+          class="btn btn-danger"
+          data-post-id="{{ post.id }}"
+          data-liked="false"
+        >
+          Like
+        </button>
+        {% endif %} {% endif %}
+      </p>
+    </div>
+  </div>
+  {% empty %}
+  <p>No posts available.</p>
+  {% endfor %}
+</div>
+
+<div class="d-flex justify-content-center">
+  <nav aria-label="Page navigation">
+    <ul class="pagination">
+      {% if page_obj.has_previous %}
+      <li class="page-item">
+        <a class="page-link" href="?page={{ page_obj.previous_page_number }}"
+          >Previous</a
+        >
+      </li>
+      {% endif %} {% for page in page_obj.paginator.page_range %} 
+      {% if page_obj.number == page %}
+      <li class="page-item active">
+        <span class="page-link">{{ page }}</span>
+      </li>
+      {% else %}
+      <li class="page-item">
+        <a class="page-link" href="?page={{ page }}">{{ page }}</a>
+      </li>
+      {% endif %} 
+      {% endfor %} 
+      {% if page_obj.has_next %}
+      <li class="page-item">
+        <a class="page-link" href="?page={{ page_obj.next_page_number }}"
+          >Next</a
+        >
+      </li>
+      {% endif %}
+    </ul>
+  </nav>
+</div>
+
+<script>
+  // Include the JavaScript code for like.js here
+  document.addEventListener("DOMContentLoaded", () => {
+    const csrfToken = "{{ csrf_token }}";
+    const likeButtons = document.querySelectorAll('[id^="like-button-"]');
+    likeButtons.forEach((button) => {
+      button.removeEventListener("click", handleLikeButtonClick);
+      button.addEventListener("click", handleLikeButtonClick);
+    });
+
+    function handleLikeButtonClick() {
+      const postId = this.dataset.postId;
+      const liked = this.dataset.liked === "true";
+
+      // Update the button text immediately
+      this.textContent = liked ? "Like" : "Unlike";
+
+      like(postId, !liked)
+        .then((data) => {
+          // Update the button state after the server response
+          this.dataset.liked = data.liked.toString();
+
+          // Update the like count
+          const likeCountElement = document.querySelector(
+            `[data-post-id="${postId}"]`
+          );
+          likeCountElement.textContent = data.likes_count;
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    }
+
+    function like(postId, liked) {
+      return new Promise((resolve, reject) => {
+        fetch(`/like/${postId}`, {
+          method: liked ? "DELETE" : "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": csrfToken,
+          },
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error(`Request failed with status ${response.status}`);
+            }
+            return response.json();
+          })
+          .then((data) => {
+            resolve(data);
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+            reject(error);
+          });
+      });
+    }
+  });
+</script>
+{% endblock %}

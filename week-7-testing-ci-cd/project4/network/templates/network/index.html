@@ -1,7 +1,8 @@
 {% extends "network/layout.html" %} 
 {% block body %}
 <div class="container-fluid">
-  <h2 style="margin-top: 20px; ">Recent Posts</h2>
+  <h2 style="margin-top: 20px; color:#111827
+">Recent Posts</h2>
   <hr>
 
   {% if user.is_authenticated %}
@@ -42,7 +43,7 @@
   {% for post in page_obj %}
     <div class="card mb-4">
       <div class="card-body">
-        <h5 class="card-title"><a href="#">@{{ post.user.username }}</a></h5>
+<h5 class="card-title"><a href="{% url 'profile' post.user.username %}">@{{ post.user.username }}</a></h5>
         <p class="card-text">{{ post.content }}</p>
         <p class="card-text text-muted">
           <small>Posted on: {{ post.timestamp }}</small>
