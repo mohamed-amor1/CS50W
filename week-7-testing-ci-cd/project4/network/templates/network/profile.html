@@ -29,29 +29,24 @@
 
 
 
-  <hr />
-  <div class="card" style="border-radius: 30px;">
-    <div class="card-body">
-        <div class="row">
-    <div class="col text-center">
-    <div><h3>Followers</h3></div>
-        <div><h3><span class="badge bg-primary text-light" id="followers-count">{{ followers }}</span></span></h3></div>
+<hr />
 
-</div>
-
-
- <div class="col text-center">
-    <div><h3>Following</h3></div>
+<div class="card" style="border-radius: 30px;">
+  <div class="card-body">
+    <div class="row">
+      <div class="col text-center">
+        <div><h3>Followers</h3></div>
+        <div><h3><span class="badge bg-primary text-light" id="followers-count">{{ followers }}</span></h3></div>
+      </div>
+      <div class="col text-center">
+        <div><h3>Following</h3></div>
         <div><h3><span class="badge bg-primary text-light" id="following-count">{{ following }}</span></h3></div>
-
-</div>
-
       </div>
     </div>
   </div>
+</div>
 
-
-  <hr />
+<hr />
 
   <h2>Posts:</h2>
   {% for post in page_obj %}
@@ -63,6 +58,7 @@
         >
       </h5>
       <p class="card-text">{{ post.content }}</p>
+      
       <p class="card-text text-muted">
         <small>Posted on: {{ post.timestamp }}</small>
       </p>
@@ -138,64 +134,62 @@
     </ul>
   </nav>
 </div>
+<script>// Include the JavaScript code for like.js here
+document.addEventListener("DOMContentLoaded", () => {
+  const csrfToken = "{{ csrf_token }}";
+  const likeButtons = document.querySelectorAll('[id^="like-button-"]');
+  likeButtons.forEach((button) => {
+    button.removeEventListener("click", handleLikeButtonClick);
+    button.addEventListener("click", handleLikeButtonClick);
+  });
 
-<script>
-  // Include the JavaScript code for like.js here
-  document.addEventListener("DOMContentLoaded", () => {
-    const csrfToken = "{{ csrf_token }}";
-    const likeButtons = document.querySelectorAll('[id^="like-button-"]');
-    likeButtons.forEach((button) => {
-      button.removeEventListener("click", handleLikeButtonClick);
-      button.addEventListener("click", handleLikeButtonClick);
-    });
+  function handleLikeButtonClick() {
+    const postId = this.dataset.postId;
+    const liked = this.dataset.liked === "true";
 
-    function handleLikeButtonClick() {
-      const postId = this.dataset.postId;
-      const liked = this.dataset.liked === "true";
+    // Update the button text immediately
+    this.textContent = liked ? "Like" : "Unlike";
 
-      // Update the button text immediately
-      this.textContent = liked ? "Like" : "Unlike";
+    like(postId, !liked)
+      .then((data) => {
+        // Update the button state after the server response
+        this.dataset.liked = data.liked.toString();
 
-      like(postId, !liked)
+        // Update the like count
+        const likeCountElement = document.querySelector(
+          `[data-post-id="${postId}"]`
+        );
+        likeCountElement.textContent = data.likes_count;
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }
+
+  function like(postId, liked) {
+    return new Promise((resolve, reject) => {
+      fetch(`/like/${postId}`, {
+        method: liked ? "DELETE" : "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": csrfToken,
+        },
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(`Request failed with status ${response.status}`);
+          }
+          return response.json();
+        })
         .then((data) => {
-          // Update the button state after the server response
-          this.dataset.liked = data.liked.toString();
-
-          // Update the like count
-          const likeCountElement = document.querySelector(
-            `[data-post-id="${postId}"]`
-          );
-          likeCountElement.textContent = data.likes_count;
+          resolve(data);
         })
         .catch((error) => {
           console.error("Error:", error);
+          reject(error);
         });
-    }
-
-    function like(postId, liked) {
-      return new Promise((resolve, reject) => {
-        fetch(`/like/${postId}`, {
-          method: liked ? "DELETE" : "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "X-CSRFToken": csrfToken,
-          },
-        })
-          .then((response) => {
-            if (!response.ok) {
-              throw new Error(`Request failed with status ${response.status}`);
-            }
-            return response.json();
-          })
-          .then((data) => {
-            resolve(data);
-          })
-          .catch((error) => {
-            console.error("Error:", error);
-            reject(error);
-          });
-      });
-    }
-  });
+    });
+  }
+});
 </script>
 {% endblock %}

@@ -157,9 +157,6 @@ def follow_user(request, user_id):
     # Add the user to follow to the current user's following
     request.user.following.add(user_to_follow)
 
-    # Update the follower count for the user being followed
-    user_to_follow.followers.add(request.user)
-
     # Return the updated follower count
     followers_count = user_to_follow.followers.count()
     return JsonResponse({"followers_count": followers_count})
@@ -171,14 +168,12 @@ def unfollow_user(request, user_id):
     # Get the user to unfollow
     user_to_unfollow = get_object_or_404(User, id=user_id)
 
-    # Remove the user to unfollow from the current user's following
     request.user.following.remove(user_to_unfollow)
 
     # Update the follower count for the user being unfollowed
-    user_to_unfollow.followers.remove(request.user)
+    followers_count = user_to_unfollow.followers.count()
 
     # Return the updated follower count
-    followers_count = user_to_unfollow.followers.count()
     return JsonResponse({"followers_count": followers_count})
 
 
@@ -201,3 +196,24 @@ def following(request):
             "liked_post_ids": liked_post_ids,
         },
     )
+
+
+@login_required
+@csrf_protect
+def edit_post(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+
+    if (
+        request.method == "POST"
+        and request.headers.get("X-Requested-With") == "XMLHttpRequest"
+    ):
+        content = request.POST.get("content")
+
+        if post.user == request.user:  # Check if the user owns the post
+            post.content = content
+            post.save()
+            return JsonResponse({"content": post.content})  # Return updated content
+        else:
+            return JsonResponse({"error": "You are not allowed to edit this post"})
+
+    return JsonResponse({"error": "Invalid request"})
