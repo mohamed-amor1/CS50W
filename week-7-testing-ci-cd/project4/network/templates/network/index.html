@@ -10,11 +10,11 @@
   <hr>
 
   {% if user.is_authenticated %}
-  <div class="row">
-    <div class="col-md-8">
-      <div class="card border-white mb-3" style="max-width: 475px; margin-bottom: 30px;   border-radius: 15px; box-shadow: rgba(0, 0, 0, 0.15) 0px 2px 8px;;
+  <div class="row ">
+    <div class="col">
+      <div class="card border-white mb-3" style=" margin-bottom: 30px;   border-radius: 20px; box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
 ">
-        <div class="card-header text-secondary" style="background:none;   border-top-left-radius: 15px;
+        <div class="card-header text-secondary" style="background:none;   border-top-left-radius: 20px;
   border-top-right-radius: 15px;
 ">
           <h4 class="card-title">What's happening?</h4>
@@ -47,12 +47,14 @@
   {% for post in page_obj %}
     <div class="card mb-4">
       <div class="card-body">
-<h5 class="card-title"><a href="{% url 'profile' post.user.username %}">@{{ post.user.username }}</a></h5>
-
-        <p class="card-text">{{ post.content }}</p>
+        <!-- Post content -->
+        <h5 class="card-title"><a href="{% url 'profile' post.user.username %}">@{{ post.user.username }}</a></h5>
+        <p id="post-content-{{ post.id }}" class="card-text">{{ post.content }}</p>
         <p class="card-text text-muted">
           <small>Posted on: {{ post.timestamp }}</small>
         </p>
+        
+        <!-- Like button -->
         <p class="card-text">
           <svg class="like-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 54 72">
             <path fill="#E81C4F" d="M38.723,12c-7.187,0-11.16,7.306-11.723,8.131C26.437,19.306,22.504,12,15.277,12C8.791,12,3.533,18.163,3.533,24.647 C3.533,39.964,21.891,55.907,27,56c5.109-0.093,23.467-16.036,23.467-31.353C50.467,18.163,45.209,12,38.723,12z"/>
@@ -60,25 +62,33 @@
           <span class="like-count" data-post-id="{{ post.id }}">
             {{ post.likes.count }}
           </span>
-         {% if user.is_authenticated %}
-      {% if post.id in liked_post_ids %}
-        <button id="like-button-{{ post.id }}" class="btn btn-danger" data-post-id="{{ post.id }}" data-liked="true">Unlike</button>
-    {% else %}
-        <button id="like-button-{{ post.id }}" class="btn btn-danger" data-post-id="{{ post.id }}" data-liked="false">Like</button>
-    {% endif %}
+          {% if user.is_authenticated %}
+            {% if post.id in liked_post_ids %}
+              <button id="like-button-{{ post.id }}" class="btn btn-danger" data-post-id="{{ post.id }}" data-liked="true">Unlike</button>
+            {% else %}
+              <button id="like-button-{{ post.id }}" class="btn btn-danger" data-post-id="{{ post.id }}" data-liked="false">Like</button>
+            {% endif %}
+          {% endif %}
+        </p>
+
+        <!-- Edit form -->
+       {% if user.is_authenticated and post.user == request.user %}
+  <button id="edit-button-{{ post.id }}" class="btn btn-light btn-sm edit-button" data-post-id="{{ post.id }}" style="border-radius: 20px;">Edit</button>
+
+  <div id="edit-form-{{ post.id }}" style="display: none;">
+    <textarea id="post-edit-content-{{ post.id }}" class="form-control" rows="4" style="margin-top: 20px; margin-bottom: 20px;"></textarea>
+    <button id="save-button-{{ post.id }}" class="btn btn-success">Save</button>
+  </div>
 {% endif %}
 
-
-
-
-
-        </p>
       </div>
     </div>
   {% empty %}
     <p>No posts available.</p>
   {% endfor %}
 </div>
+
+
 
 
 <!-- Pagination links -->

@@ -10,6 +10,7 @@ from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_protect
 from .models import User, Post
+import json
 
 
 def index(request):
@@ -203,11 +204,9 @@ def following(request):
 def edit_post(request, post_id):
     post = get_object_or_404(Post, id=post_id)
 
-    if (
-        request.method == "POST"
-        and request.headers.get("X-Requested-With") == "XMLHttpRequest"
-    ):
-        content = request.POST.get("content")
+    if request.method == "POST":
+        body = json.loads(request.body)
+        content = body.get("content")
 
         if post.user == request.user:  # Check if the user owns the post
             post.content = content
@@ -217,3 +216,8 @@ def edit_post(request, post_id):
             return JsonResponse({"error": "You are not allowed to edit this post"})
 
     return JsonResponse({"error": "Invalid request"})
+
+
+def get_post(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+    return JsonResponse({"content": post.content})
